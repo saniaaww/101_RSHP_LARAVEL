@@ -24,4 +24,13 @@ public function role()
     return $this->belongsTo(Role::class);
 }
 
+public function pemilik()
+{
+    return $this -> hasOne(Pemilik::class, 'iduser', 'iduser');
+}
+
+public function roleUser()
+{
+    return $this->hasMany(\App\Models\RoleUser::class, 'iduser', 'iduser');
+}
 }

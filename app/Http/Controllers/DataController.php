@@ -17,7 +17,7 @@ class DataController extends Controller
 // Halaman utama Data Master
 public function index()
 {
-return view('admin.data_master');
+return view('admin.dashboard');
 }
 
 
