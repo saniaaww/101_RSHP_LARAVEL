@@ -1,24 +1,38 @@
 @extends('admin.layouts.admin')
-
 @section('content')
-<div class="p-6">
-    <h2 class="text-2xl font-semibold text-blue-600 mb-6">🧩 Daftar Role</h2>
+<div class="py-8">
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-semibold text-blue-800">Daftar Role</h2>
+        <a href="{{ route('admin.role.create') }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Tambah Role</a>
+    </div>
 
-    <div class="bg-white rounded-2xl shadow-md overflow-hidden">
-        <table class="min-w-full text-left">
-            <thead class="bg-blue-100 text-blue-700">
-                <tr>
-                    <th class="py-3 px-6">No</th>
-                    <th class="py-3 px-6">Nama Role</th>
+    <div class="bg-white rounded-xl shadow p-4">
+        <table class="w-full text-left">
+            <thead>
+                <tr class="text-sm text-blue-600">
+                    <th class="p-3">ID</th>
+                    <th class="p-3">Nama Role</th>
+                    <th class="p-3">Aksi</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($roles as $i => $role)
-                <tr class="border-b hover:bg-blue-50 transition">
-                    <td class="py-3 px-6">{{ $i + 1 }}</td>
-                    <td class="py-3 px-6">{{ $role->nama_role }}</td>
+
+                @foreach($role as $r)
+                <tr class="border-t">
+                    <td class="p-3">{{ $r->idrole }}</td>
+                    <td class="p-3">{{ $r->nama_role }}</td>
+                    <td class="p-3">
+                        <a href="{{ route('admin.role.edit', $r->idrole) }}" class="text-blue-600 text-sm mr-3">Edit</a>
+
+                        <form action="{{ route('admin.role.destroy', $r->idrole) }}" method="POST" class="inline">
+                            @csrf
+                            @method('DELETE')
+                            <button class="text-red-500 text-sm" onclick="return confirm('Hapus role?')">Hapus</button>
+                        </form>
+                    </td>
                 </tr>
                 @endforeach
+
             </tbody>
         </table>
     </div>

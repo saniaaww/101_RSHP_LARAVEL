@@ -17,7 +17,7 @@
     <h2 class="text-3xl font-bold text-center text-blue-700 mb-8">Data Master</h2>
 
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-<a href="{{ route('admin.data.jenis') }}" class="block bg-blue-100 p-8 rounded-2xl shadow hover:shadow-lg transition">
+<a href="{{ route('admin.jenis.index') }}" class="block bg-blue-100 p-8 rounded-2xl shadow hover:shadow-lg transition">
 <div class="flex items-center gap-4">
 <div class="w-14 h-14 bg-blue-200 rounded-xl flex items-center justify-center text-2xl">🐶</div>
 <div>
@@ -28,7 +28,7 @@
 </a>
 
 
-<a href="{{ route('admin.data.ras') }}" class="block bg-blue-100 p-8 rounded-2xl shadow hover:shadow-lg transition">
+<a href="{{ route('admin.ras.index') }}" class="block bg-blue-100 p-8 rounded-2xl shadow hover:shadow-lg transition">
 <div class="flex items-center gap-4">
 <div class="w-14 h-14 bg-blue-200 rounded-xl flex items-center justify-center text-2xl">🐾</div>
 <div>
@@ -39,7 +39,7 @@
 </a>
 
 
-<a href="{{ route('admin.data.kategori') }}" class="block bg-blue-100 p-8 rounded-2xl shadow hover:shadow-lg transition">
+<a href="{{ route('admin.kategori.index') }}" class="block bg-blue-100 p-8 rounded-2xl shadow hover:shadow-lg transition">
 <div class="flex items-center gap-4">
 <div class="w-14 h-14 bg-blue-200 rounded-xl flex items-center justify-center text-2xl">🗂️</div>
 <div>
@@ -50,7 +50,7 @@
 </a>
 
 
-<a href="{{ route('admin.data.kategori_klinis') }}" class="block bg-blue-100 p-8 rounded-2xl shadow hover:shadow-lg transition">
+<a href="{{ route('admin.kategori-klinis.index') }}" class="block bg-blue-100 p-8 rounded-2xl shadow hover:shadow-lg transition">
 <div class="flex items-center gap-4">
 <div class="w-14 h-14 bg-blue-200 rounded-xl flex items-center justify-center text-2xl">💊</div>
 <div>
@@ -61,7 +61,7 @@
 </a>
 
 
-<a href="{{ route('admin.data.kode_tindakan') }}" class="block bg-blue-100 p-8 rounded-2xl shadow hover:shadow-lg transition">
+<a href="{{ route('admin.kode-tindakan.index') }}" class="block bg-blue-100 p-8 rounded-2xl shadow hover:shadow-lg transition">
 <div class="flex items-center gap-4">
 <div class="w-14 h-14 bg-blue-200 rounded-xl flex items-center justify-center text-2xl">⚕️</div>
 <div>
@@ -71,7 +71,7 @@
 </div>
 </a>
 
-<a href="{{ route('admin.data.pet') }}" class="block bg-blue-100 p-8 rounded-2xl shadow hover:shadow-lg transition">
+<a href="{{ route('admin.pet.index') }}" class="block bg-blue-100 p-8 rounded-2xl shadow hover:shadow-lg transition">
 <div class="flex items-center gap-4">
 <div class="w-14 h-14 bg-blue-200 rounded-xl flex items-center justify-center text-2xl">🐕</div>
 <div>
@@ -81,7 +81,7 @@
 </div>
 </a>
 
-<a href="{{ route('admin.data.role') }}" class="block bg-blue-100 p-8 rounded-2xl shadow hover:shadow-lg transition">
+<a href="{{ route('admin.role.index') }}" class="block bg-blue-100 p-8 rounded-2xl shadow hover:shadow-lg transition">
 <div class="flex items-center gap-4">
 <div class="w-14 h-14 bg-blue-200 rounded-xl flex items-center justify-center text-2xl">🧩</div>
 <div>
@@ -91,7 +91,7 @@
 </div>
 </a>
 
-<a href="{{ route('admin.data.user') }}" class="block bg-blue-100 p-8 rounded-2xl shadow hover:shadow-lg transition">
+<a href="{{ route('admin.user.index') }}" class="block bg-blue-100 p-8 rounded-2xl shadow hover:shadow-lg transition">
 <div class="flex items-center gap-4">
 <div class="w-14 h-14 bg-blue-200 rounded-xl flex items-center justify-center text-2xl">👥</div>
 <div>

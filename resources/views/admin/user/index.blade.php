@@ -1,36 +1,44 @@
 @extends('admin.layouts.admin')
-
 @section('content')
-<div class="p-8">
-    <h2 class="text-3xl font-bold text-blue-600 mb-6">👤 Daftar User</h2>
 
-    <div class="bg-white rounded-2xl shadow-md overflow-hidden">
-        <table class="min-w-full text-left border">
-            <thead class="bg-blue-100 text-blue-700">
-                <tr>
-                    <th class="py-3 px-6">#</th>
-                    <th class="py-3 px-6">Nama</th>
-                    <th class="py-3 px-6">Email</th>
-                    <th class="py-3 px-6">Password (hashed)</th>
+<div class="py-8">
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-semibold text-blue-800">Daftar User</h2>
+        <a href="{{ route('admin.user.create') }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Tambah User</a>
+    </div>
+
+    <div class="bg-white rounded-xl shadow p-4">
+        <table class="w-full text-left">
+            <thead>
+                <tr class="text-sm text-blue-600">
+                    <th class="p-3">ID</th>
+                    <th class="p-3">Nama</th>
+                    <th class="p-3">Email</th>
+                    <th class="p-3">Aksi</th>
                 </tr>
             </thead>
+
             <tbody>
-                @forelse($users as $i => $user)
-                <tr class="border-b hover:bg-blue-50 transition">
-                    <td class="py-3 px-6">{{ $i + 1 }}</td>
-                    <td class="py-3 px-6">{{ $user->nama }}</td>
-                    <td class="py-3 px-6">{{ $user->email }}</td>
-                    <td class="py-3 px-6 font-mono text-gray-500 text-sm">
-                        {{ $user->password }}
+                @foreach($user as $u)
+                <tr class="border-t">
+                    <td class="p-3">{{ $u->iduser }}</td>
+                    <td class="p-3">{{ $u->nama }}</td>
+                    <td class="p-3">{{ $u->email }}</td>
+                    <td class="p-3">
+                        <a href="{{ route('admin.user.edit', $u->iduser) }}" class="text-blue-600 text-sm mr-3">Edit</a>
+
+                        <form action="{{ route('admin.user.destroy', $u->iduser) }}" method="POST" class="inline">
+                            @csrf
+                            @method('DELETE')
+                            <button class="text-red-500 text-sm" onclick="return confirm('Hapus user?')">Hapus</button>
+                        </form>
                     </td>
                 </tr>
-                @empty
-                <tr>
-                    <td colspan="4" class="text-center py-6 text-gray-500">Tidak ada data user</td>
-                </tr>
-                @endforelse
+                @endforeach
             </tbody>
+
         </table>
     </div>
 </div>
+
 @endsection

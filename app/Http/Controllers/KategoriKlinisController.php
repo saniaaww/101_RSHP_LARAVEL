@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\KategoriKlinis;
 use Illuminate\Http\Request;
 
@@ -10,8 +9,8 @@ class KategoriKlinisController extends Controller
 {
     public function index()
     {
-        $data = KategoriKlinis::all();
-        return view('admin.kategori_klinis.index', compact('data'));
+        $kategori = KategoriKlinis::all();
+        return view('admin.kategori_klinis.index', compact('kategori'));
     }
 
     public function create()
@@ -21,27 +20,62 @@ class KategoriKlinisController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $this->validateKategoriKlinis($request);
-        $validated['nama_kategori_klinis'] = $this->formatNamaKategoriKlinis($validated['nama_kategori_klinis']);
-        $this->createKategoriKlinis($validated);
+        $this->validateData($request);
 
-        return redirect()->route('admin.kategori-klinis.index')->with('success', 'Kategori klinis berhasil ditambahkan.');
+        $this->createData($request->nama_kategori_klinis);
+
+        return redirect()->route('admin.kategori-klinis.index')
+            ->with('success', 'Data berhasil ditambahkan');
     }
 
-    private function validateKategoriKlinis($request)
+    public function edit($id)
     {
-        return $request->validate([
-            'nama_kategori_klinis' => 'required|string|max:50|unique:kategori_klinis,nama_kategori_klinis'
+        $kategori = KategoriKlinis::findOrFail($id);
+        return view('admin.kategori_klinis.edit', compact('kategori'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $this->validateData($request);
+
+        $this->updateData($id, $request->nama_kategori_klinis);
+
+        return redirect()->route('admin.kategori-klinis.index')
+            ->with('success', 'Data berhasil diupdate');
+    }
+
+    public function destroy($id)
+    {
+        KategoriKlinis::destroy($id);
+
+        return redirect()->route('admin.kategori-klinis.index')
+            ->with('success', 'Data berhasil dihapus');
+    }
+
+    /* --------------------
+       VALIDATION
+    --------------------- */
+    private function validateData(Request $request)
+    {
+        $request->validate([
+            'nama_kategori_klinis' => 'required|string|max:50'
         ]);
     }
 
-    private function createKategoriKlinis($data)
+    /* --------------------
+       HELPER
+    --------------------- */
+    private function createData($nama)
     {
-        KategoriKlinis::create($data);
+        KategoriKlinis::create([
+            'nama_kategori_klinis' => $nama
+        ]);
     }
 
-    private function formatNamaKategoriKlinis($nama)
+    private function updateData($id, $nama)
     {
-        return ucwords(strtolower($nama));
+        KategoriKlinis::where('idkategori_klinis', $id)->update([
+            'nama_kategori_klinis' => $nama
+        ]);
     }
 }

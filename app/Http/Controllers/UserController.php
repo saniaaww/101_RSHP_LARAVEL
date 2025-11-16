@@ -9,9 +9,51 @@ class UserController extends Controller
 {
     public function index()
     {
-        // Ambil semua user dan relasi rolenya
-        $users = User::with('role')->get();
+        $user = User::all();
+        return view('admin.user.index', compact('user'));
+    }
 
-        return view('admin.user.index', compact('users'));
+    public function create()
+    {
+        return view('admin.user.create');
+    }
+
+    public function store(Request $request)
+    {
+        $this->validateUser($request);
+
+        $this->createUser($request);
+
+        return redirect()->route('admin.user.index')
+            ->with('success', 'User berhasil ditambahkan');
+    }
+
+    /* -------------------------
+       VALIDASI
+    -------------------------- */
+    private function validateUser(Request $request)
+    {
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'email' => 'required|email|unique:user,email',
+            'password' => 'required|min:6'
+        ]);
+    }
+
+    /* -------------------------
+       HELPER
+    -------------------------- */
+    private function createUser(Request $request)
+    {
+        User::create([
+            'nama' => $this->formatNama($request->nama),
+            'email' => $request->email,
+            'password' => bcrypt($request->password)
+        ]);
+    }
+
+    private function formatNama($nama)
+    {
+        return ucwords(strtolower($nama));
     }
 }

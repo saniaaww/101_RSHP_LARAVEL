@@ -9,10 +9,49 @@ class RoleController extends Controller
 {
     public function index()
     {
-        // Ambil semua data role dari tabel 'roles'
-        $roles = Role::all();
+        $role = Role::all();
+        return view('admin.role.index', compact('role'));
+    }
 
-        // Kirim data ke view
-        return view('admin.role.index', compact('roles'));
+    public function create()
+    {
+        return view('admin.role.create');
+    }
+
+    public function store(Request $request)
+    {
+        $this->validateRole($request);
+
+        $nama = $this->formatNama($request->nama_role);
+
+        $this->createRole($nama);
+
+        return redirect()->route('admin.role.index')
+            ->with('success', 'Role berhasil ditambahkan');
+    }
+
+    /* -------------------------
+       VALIDASI
+    -------------------------- */
+    private function validateRole(Request $request)
+    {
+        $request->validate([
+            'nama_role' => 'required|string|max:100'
+        ]);
+    }
+
+    /* -------------------------
+       HELPER
+    -------------------------- */
+    private function createRole($nama)
+    {
+        Role::create([
+            'nama_role' => $nama
+        ]);
+    }
+
+    private function formatNama($nama)
+    {
+        return ucwords(strtolower($nama));
     }
 }
