@@ -1,10 +1,20 @@
 @extends('admin.layouts.admin')
 
-
 @section('content')
-<div class="py-8">
-<h2 class="text-3xl font-bold text-center text-blue-700 mb-8">Data Master</h2>
+<div class="flex justify-end mb-4">
+    <form action="{{ route('logout') }}" method="POST">
+        @csrf
+        <button 
+            type="submit" 
+            class="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg shadow hover:bg-red-700 transition"
+        >
+            Logout
+        </button>
+    </form>
+</div>
 
+<div class="py-8">
+    <h2 class="text-3xl font-bold text-center text-blue-700 mb-8">Data Master</h2>
 
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 <a href="{{ route('admin.data.jenis') }}" class="block bg-blue-100 p-8 rounded-2xl shadow hover:shadow-lg transition">

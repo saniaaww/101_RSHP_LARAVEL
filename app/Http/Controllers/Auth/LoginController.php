@@ -12,38 +12,30 @@ use App\Models\Role;
 
 class LoginController extends Controller
 {
-    public function __construct()
-    {
-        // Hanya guest yang boleh akses login, kecuali logout
-        $this->middleware('guest')->except('logout');
-    }
-
-    /**
-     * Tampilkan form login
-     */
     public function showLoginForm()
     {
         return view('auth.login');
     }
 
-    /**
-     * Proses login user
-     */
     public function login(Request $request)
     {
-        // Validasi input
+        // Validasi
         $validator = Validator::make($request->all(), [
             'email'    => 'required|email',
             'password' => 'required|min:6',
         ]);
 
         if ($validator->fails()) {
-            return back()->withErrors($validator)->withInput();
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
         }
 
-        // Ambil user berdasarkan email
-        $user = User::with(['roleUser.role'])
-            ->where('email', $request->input('email'))
+        // Cari user + relasi role aktif
+        $user = User::with(['roleUser' => function ($q) {
+            $q->where('status', 1);
+        }, 'roleUser.role'])
+            ->where('email', $request->email)
             ->first();
 
         if (!$user) {
@@ -55,42 +47,41 @@ class LoginController extends Controller
             return back()->withErrors(['password' => 'Password salah.'])->withInput();
         }
 
-        // Login user ke sistem
+        // Login Laravel
         Auth::login($user);
 
-        // Ambil role aktif user (status = 1)
-        $roleAktif = $user->roleUser->firstWhere('status', 1);
-        $namaRole = $roleAktif ? $roleAktif->role->nama_role : 'User';
+        // Ambil role aktif
+        $roleAktif = $user->roleUser->first();
+        $userRole = $roleAktif->idrole ?? null;
+        $namaRole = $roleAktif->role->nama_role ?? 'User';
 
-        // Simpan ke session
+        // Simpan session custom
         $request->session()->put([
-            'user_id'        => $user->iduser,
-            'user_name'      => $user->nama,
-            'user_email'     => $user->email,
-            'user_role_id'   => $roleAktif->idrole ?? null,
+            'user_id'    => $user->iduser,
+            'user_name'  => $user->nama,
+            'user_email' => $user->email,
+            'user_role'  => $userRole,
             'user_role_name' => $namaRole,
+            'user_status'    => $roleAktif->status ?? 1,
         ]);
 
-        // Redirect sesuai role
-        switch ($namaRole) {
-            case 'Administrator':
-                return redirect()->intended('/admin/dashboard')->with('success', 'Selamat datang, Admin!');
-            case 'Dokter':
-                return redirect()->intended('/dokter/dashboard')->with('success', 'Selamat datang, Dokter!');
-            case 'Perawat':
-                return redirect()->intended('/perawat/dashboard')->with('success', 'Selamat datang, Perawat!');
-            case 'Resepsionis':
-                return redirect()->intended('/resepsionis/dashboard')->with('success', 'Selamat datang, Resepsionis!');
-            case 'Pemilik':
-                return redirect()->intended('/pemilik/dashboard')->with('success', 'Selamat datang, Pemilik!');
+        // Redirect berdasarkan role
+        switch ($userRole) {
+            case 1:
+                return redirect()->route('admin.dashboard')->with('success', 'Login berhasil!');
+            case 6:
+                return redirect()->route('dokter.dashboard')->with('success', 'Login berhasil!');
+            case 7:
+                return redirect()->route('perawat.dashboard')->with('success', 'Login berhasil!');
+            case 4:
+                return redirect()->route('resepsionis.dashboard')->with('success', 'Login berhasil!');
+            case 8:
+                return redirect()->route('pemilik.dashboard')->with('success', 'Login berhasil!');
             default:
-                return redirect()->intended('/')->with('success', 'Login berhasil!');
+                return redirect('/')->with('success', 'Login berhasil!');
         }
     }
 
-    /**
-     * Logout user
-     */
     public function logout(Request $request)
     {
         Auth::logout();

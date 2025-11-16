@@ -11,4 +11,5 @@ class ResepsionisController extends Controller
         $data = TemuDokter::with(['pet', 'roleUser'])->get();
         return view('resepsionis.dashboard', compact('data'));
     }
+    
 }

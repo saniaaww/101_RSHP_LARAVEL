@@ -15,10 +15,6 @@ public $timestamps = false;
 protected $fillable = ['nama','email','password'];
 
 
-public function roleUsers()
-{
-return $this->hasMany(RoleUser::class, 'iduser', 'iduser');
-}
 public function role()
 {
     return $this->belongsTo(Role::class);

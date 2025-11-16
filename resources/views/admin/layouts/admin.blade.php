@@ -28,6 +28,8 @@
 
 
 <footer class="mt-12 mb-6 text-center text-sm text-blue-400">© {{ date('Y') }} Admin - Data Master</footer>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
 </div>
 </body>
 </html>
