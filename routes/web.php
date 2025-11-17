@@ -60,7 +60,6 @@ Route::middleware(['auth'])->group(function () {
     ->group(function () {
 
         Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
-
         Route::resource('jenis', JenisHewanController::class);
         Route::resource('ras', RasController::class);
         Route::resource('kategori', KategoriController::class);

@@ -2,61 +2,92 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Kategori;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class KategoriController extends Controller
 {
+    /* =====================================
+        INDEX (Query Builder)
+    ====================================== */
     public function index()
     {
-        $kategori = Kategori::all();
+        $kategori = DB::table('kategori')->get();
         return view('admin.kategori.index', compact('kategori'));
     }
 
+    /* =====================================
+        CREATE
+    ====================================== */
     public function create()
     {
         return view('admin.kategori.create');
     }
 
+    /* =====================================
+        STORE (INSERT Query Builder)
+    ====================================== */
     public function store(Request $request)
     {
         $this->validateKategori($request);
 
         $nama = $this->formatNama($request->nama_kategori);
 
-        $this->createKategori($nama);
+        DB::table('kategori')->insert([
+            'nama_kategori' => $nama
+        ]);
 
         return redirect()->route('admin.kategori.index')
                          ->with('success', 'Kategori berhasil ditambahkan!');
     }
 
+    /* =====================================
+        EDIT (SELECT Query Builder)
+    ====================================== */
     public function edit($id)
     {
-        $kategori = Kategori::findOrFail($id);
+        $kategori = DB::table('kategori')
+                        ->where('idkategori', $id)
+                        ->first();
+
         return view('admin.kategori.edit', compact('kategori'));
     }
 
+    /* =====================================
+        UPDATE (Query Builder)
+    ====================================== */
     public function update(Request $request, $id)
     {
         $this->validateKategori($request);
 
         $nama = $this->formatNama($request->nama_kategori);
 
-        $this->updateKategori($id, $nama);
+        DB::table('kategori')
+            ->where('idkategori', $id)
+            ->update([
+                'nama_kategori' => $nama
+            ]);
 
         return redirect()->route('admin.kategori.index')
                          ->with('success', 'Kategori berhasil diperbarui!');
     }
 
+    /* =====================================
+        DELETE (Query Builder)
+    ====================================== */
     public function destroy($id)
     {
-        Kategori::destroy($id);
+        DB::table('kategori')
+            ->where('idkategori', $id)
+            ->delete();
 
         return redirect()->route('admin.kategori.index')
                          ->with('success', 'Kategori berhasil dihapus!');
     }
 
-    /* === VALIDATION === */
+    /* =====================================
+        VALIDATION
+    ====================================== */
     private function validateKategori(Request $request)
     {
         $request->validate([
@@ -64,18 +95,9 @@ class KategoriController extends Controller
         ]);
     }
 
-    /* === HELPER === */
-    private function createKategori($nama)
-    {
-        Kategori::create(['nama_kategori' => $nama]);
-    }
-
-    private function updateKategori($id, $nama)
-    {
-        Kategori::where('idkategori', $id)
-                ->update(['nama_kategori' => $nama]);
-    }
-
+    /* =====================================
+        HELPER
+    ====================================== */
     private function formatNama($nama)
     {
         return ucwords(strtolower($nama));
