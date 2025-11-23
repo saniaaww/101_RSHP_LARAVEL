@@ -1,44 +1,80 @@
-@extends('admin.layouts.admin')
+@extends('layouts.lte.main')
+
+@section('title', 'Jenis Hewan')
 
 @section('content')
-<div class="p-8">
 
-    <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold">Data Jenis Hewan</h2>
-        <a href="{{ route('admin.jenis.create') }}"
-           class="bg-blue-600 text-white px-4 py-2 rounded">
-           + Tambah
+<div class="container-fluid py-4">
+
+    <!-- Header + Button -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="font-weight-bold text-primary" style="font-size:26px;">
+            Data Jenis Hewan
+        </h2>
+
+        <a href="{{ route('admin.jenis.create') }}" 
+           class="btn text-white"
+           style="background: linear-gradient(135deg, #4A90E2, #6EC6FF); border-radius:10px;">
+            + Tambah
         </a>
     </div>
 
-    <table class="w-full border">
-        <thead>
-            <tr class="bg-gray-200">
-                <th class="p-3">ID</th>
-                <th class="p-3">Nama Jenis Hewan</th>
-                <th class="p-3">Aksi</th>
-            </tr>
-        </thead>
+    <!-- Card Container -->
+    <div class="card shadow-sm border-0" style="border-radius:14px;">
+        <div class="card-body">
 
-        <tbody>
-            @foreach($jenis as $row)
-            <tr>
-                <td class="p-3">{{ $row->idjenis_hewan }}</td>
-                <td class="p-3">{{ $row->nama_jenis_hewan }}</td>
-                <td class="p-3">
-                    <a href="{{ route('admin.jenis.edit', $row->idjenis_hewan) }}" class="text-blue-600">Edit</a>
-                    |
-                    <form action="{{ route('admin.jenis.destroy', $row->idjenis_hewan) }}"
-                          method="POST" class="inline">
-                        @csrf
-                        @method('DELETE')
-                        <button class="text-red-600" onclick="return confirm('Hapus?')">Hapus</button>
-                    </form>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+            <table class="table table-bordered table-hover">
+                <thead class="text-center" style="background:#E3F2FD;">
+                    <tr>
+                        <th style="width: 80px;">ID</th>
+                        <th>Nama Jenis Hewan</th>
+                        <th style="width: 180px;">Aksi</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @forelse($jenis as $row)
+                    <tr>
+                        <td class="text-center">{{ $row->idjenis_hewan }}</td>
+                        <td>{{ $row->nama_jenis_hewan }}</td>
+                        <td class="text-center">
+
+                            <!-- Edit -->
+                            <a href="{{ route('admin.jenis.edit', $row->idjenis_hewan) }}"
+                               class="btn btn-sm text-white"
+                               style="background: linear-gradient(135deg, #00ACC1, #4DD0E1); border-radius:8px;">
+                                Edit
+                            </a>
+
+                            <!-- Delete -->
+                            <form action="{{ route('admin.jenis.destroy', $row->idjenis_hewan) }}"
+                                  method="POST" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button 
+                                    class="btn btn-sm text-white"
+                                    style="background: linear-gradient(135deg, #E53935, #EF5350); border-radius:8px;"
+                                    onclick="return confirm('Hapus data ini?')">
+                                    Hapus
+                                </button>
+                            </form>
+
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="3" class="text-center text-muted py-3">
+                            Tidak ada data jenis hewan.
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
 
 </div>
+
 @endsection

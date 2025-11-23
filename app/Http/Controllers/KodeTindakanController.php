@@ -37,7 +37,7 @@ class KodeTindakanController extends Controller
     }
 
     /* =====================================
-        STORE (Insert)
+        STORE
     ====================================== */
     public function store(Request $request)
     {
@@ -55,18 +55,18 @@ class KodeTindakanController extends Controller
     }
 
     /* =====================================
-        EDIT (Select by ID)
+        EDIT
     ====================================== */
     public function edit($id)
     {
-        $data = DB::table('kode_tindakan_terapi')
+        $kode = DB::table('kode_tindakan_terapi')
             ->where('idkode_tindakan_terapi', $id)
             ->first();
 
         $kategori = DB::table('kategori')->get();
         $kategoriKlinis = DB::table('kategori_klinis')->get();
 
-        return view('admin.kode_tindakan.edit', compact('data', 'kategori', 'kategoriKlinis'));
+        return view('admin.kode_tindakan.edit', compact('kode', 'kategori', 'kategoriKlinis'));
     }
 
     /* =====================================

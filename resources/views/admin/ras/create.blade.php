@@ -1,23 +1,46 @@
-@extends('admin.layouts.admin')
+@extends('layouts.lte.main')
+
+@section('title', 'Tambah Ras')
 
 @section('content')
-<div class="py-8 w-1/2 mx-auto">
-    <h2 class="text-2xl font-semibold text-blue-800 mb-4">Tambah Ras Hewan</h2>
+<div class="container-fluid col-lg-6">
 
-    <form action="{{ route('admin.ras.store') }}" method="POST">
-        @csrf
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Tambah Ras Hewan</h4>
+        </div>
 
-        <label>Nama Ras</label>
-        <input type="text" name="nama_ras" class="w-full p-2 border rounded mb-4">
+        <div class="card-body">
 
-        <label>Jenis Hewan</label>
-        <select name="idjenis_hewan" class="w-full p-2 border rounded mb-4">
-            @foreach ($jenis as $j)
-                <option value="{{ $j->idjenis_hewan }}">{{ $j->nama_jenis_hewan }}</option>
-            @endforeach
-        </select>
+            <form action="{{ route('admin.ras.store') }}" method="POST">
+                @csrf
 
-        <button class="bg-blue-600 text-white px-4 py-2 rounded">Simpan</button>
-    </form>
+                <!-- Input Nama Ras -->
+                <div class="form-group">
+                    <label class="font-weight-semibold">Nama Ras</label>
+                    <input type="text" name="nama_ras" class="form-control" value="{{ old('nama_ras') }}" required>
+                </div>
+
+                <!-- Dropdown Jenis Hewan -->
+                <div class="form-group">
+                    <label class="font-weight-semibold">Jenis Hewan</label>
+                    <select name="idjenis_hewan" class="form-control" required>
+                        <option value="">-- Pilih Jenis Hewan --</option>
+                        @foreach ($jenis as $j)
+                            <option value="{{ $j->idjenis_hewan }}">{{ $j->nama_jenis_hewan }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Tombol -->
+                <button class="btn btn-primary px-4">
+                    <i class="fas fa-save mr-1"></i> Simpan
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+
 </div>
 @endsection

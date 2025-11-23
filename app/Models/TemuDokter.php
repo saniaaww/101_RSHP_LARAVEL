@@ -29,4 +29,12 @@ class TemuDokter extends Model
     {
         return $this->belongsTo(RoleUser::class, 'idrole_user', 'idrole_user');
     }
+
+    public function dokter()
+    {
+        return $this->belongsTo(RoleUser::class, 'idrole_user');
+    }
 }
+
+
+  

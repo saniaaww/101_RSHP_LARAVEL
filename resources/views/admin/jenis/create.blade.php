@@ -1,25 +1,55 @@
-@extends('admin.layouts.admin')
+@extends('layouts.lte.main')
+
+@section('title', 'Tambah Jenis Hewan')
 
 @section('content')
-<div class="p-8">
 
-    <h2 class="text-2xl font-bold mb-6">Tambah Jenis Hewan</h2>
+<div class="container-fluid py-4" style="max-width: 700px;">
 
-    <form action="{{ route('admin.jenis.store') }}" method="POST">
-        @csrf
+    <div class="card shadow-sm border-0" style="border-radius: 16px;">
+        <div class="card-body">
 
-        <div class="mb-4">
-            <label class="block mb-1 font-semibold">Nama Jenis Hewan</label>
-            <input type="text" name="nama_jenis_hewan"
-                class="border p-2 w-full rounded" value="{{ old('nama_jenis_hewan') }}">
+            <h3 class="font-weight-bold mb-4 text-primary">
+                Tambah Jenis Hewan
+            </h3>
 
-            @error('nama_jenis_hewan')
-                <p class="text-red-600 text-sm">{{ $message }}</p>
-            @enderror
+            <form action="{{ route('admin.jenis.store') }}" method="POST">
+                @csrf
+
+                <!-- Input -->
+                <div class="form-group mb-4">
+                    <label class="font-weight-semibold">Nama Jenis Hewan</label>
+                    <input 
+                        type="text" 
+                        name="nama_jenis_hewan"
+                        class="form-control"
+                        placeholder="Masukkan nama jenis hewan..."
+                        value="{{ old('nama_jenis_hewan') }}"
+                    >
+
+                    @error('nama_jenis_hewan')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
+                </div>
+
+                <!-- Submit -->
+                <button 
+                    class="btn text-white px-4 py-2"
+                    style="background: linear-gradient(135deg, #4A90E2, #6EC6FF); border-radius:8px;">
+                    Simpan
+                </button>
+
+                <a href="{{ route('admin.jenis.index') }}"
+                   class="btn btn-secondary ml-2 px-4 py-2"
+                   style="border-radius:8px;">
+                    Batal
+                </a>
+
+            </form>
+
         </div>
-
-        <button class="bg-blue-600 text-white px-4 py-2 rounded">Simpan</button>
-    </form>
+    </div>
 
 </div>
+
 @endsection

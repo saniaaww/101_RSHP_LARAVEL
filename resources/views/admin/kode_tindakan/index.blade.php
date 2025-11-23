@@ -1,4 +1,4 @@
-@extends('admin.layouts.admin')
+@extends('layouts.lte.main')
 @section('content')
 
 <div class="py-8">

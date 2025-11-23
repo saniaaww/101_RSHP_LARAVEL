@@ -50,6 +50,7 @@ class KategoriKlinisController extends Controller
 
         return view('admin.kategori_klinis.edit', compact('kategori'));
     }
+    
 
     /* =====================================
         UPDATE

@@ -1,4 +1,4 @@
-@extends('admin.layouts.admin')
+@extends('layouts.lte.main')
 @section('content')
 <div class="py-8">
 <h2 class="text-2xl font-semibold text-blue-800 mb-6">Tambah Kategori Klinis</h2>

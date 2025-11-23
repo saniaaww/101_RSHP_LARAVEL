@@ -1,34 +1,40 @@
-@extends('admin.layouts.admin')
-
+@extends('layouts.lte.main')
 @section('content')
-<div class="max-w-xl mx-auto py-8">
 
-    <h2 class="text-2xl font-bold text-blue-800 mb-6">Edit Kategori</h2>
+<div class="py-10 max-w-2xl mx-auto">
 
-    <form action="{{ route('admin.kategori.update', $kategori->idkategori) }}" method="POST">
-        @csrf
-        @method('PUT')
+    <h2 class="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-8">
+        Edit Kategori
+    </h2>
 
-        <div class="mb-4">
-            <label class="block font-medium mb-1">Nama Kategori</label>
-            <input type="text" name="nama_kategori"
-                   value="{{ $kategori->nama_kategori }}"
-                   class="w-full border rounded-lg p-2"
-                   required>
-        </div>
+    <div class="bg-white/70 backdrop-blur-md border border-purple-100 rounded-2xl shadow-lg p-8">
 
-        <div class="flex gap-4 mt-6">
-            <a href="{{ route('admin.kategori.index') }}"
-               class="px-4 py-2 bg-gray-400 text-white rounded-lg">
-                Batal
-            </a>
+        <form action="{{ route('admin.kategori.update', $kategori->idkategori) }}" method="POST">
+            @csrf
+            @method('PUT')
 
-            <button type="submit"
-                    class="px-4 py-2 bg-blue-600 text-white rounded-lg">
-                Update
-            </button>
-        </div>
-    </form>
+            <div class="mb-5">
+                <label class="block font-semibold text-gray-700 mb-1">Nama Kategori</label>
+                <input type="text" name="nama_kategori"
+                       value="{{ $kategori->nama_kategori }}"
+                       class="w-full border px-4 py-2 rounded-xl focus:ring-2 focus:ring-purple-400 focus:outline-none"
+                       required>
+            </div>
 
+            <div class="flex gap-4 mt-6">
+                <a href="{{ route('admin.kategori.index') }}"
+                   class="px-5 py-2.5 bg-gray-400 text-white rounded-xl shadow hover:shadow-md transition">
+                    Batal
+                </a>
+
+                <button type="submit"
+                        class="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-xl shadow hover:shadow-md transition">
+                    Update
+                </button>
+            </div>
+        </form>
+
+    </div>
 </div>
+
 @endsection

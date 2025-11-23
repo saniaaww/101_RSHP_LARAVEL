@@ -31,10 +31,8 @@ class JenisHewanController extends Controller
     {
         $this->validateJenis($request);
 
-        $nama = $this->formatNama($request->nama_jenis_hewan);
-
         DB::table('jenis_hewan')->insert([
-            'nama_jenis_hewan' => $nama
+            'nama_jenis_hewan' => ucwords(strtolower($request->nama_jenis_hewan))
         ]);
 
         return redirect()->route('admin.jenis.index')
@@ -42,7 +40,7 @@ class JenisHewanController extends Controller
     }
 
     /* =====================================
-        EDIT (Select by id - Query Builder)
+        EDIT
     ====================================== */
     public function edit($id)
     {
@@ -60,12 +58,10 @@ class JenisHewanController extends Controller
     {
         $this->validateJenis($request);
 
-        $nama = $this->formatNama($request->nama_jenis_hewan);
-
         DB::table('jenis_hewan')
             ->where('idjenis_hewan', $id)
             ->update([
-                'nama_jenis_hewan' => $nama
+                'nama_jenis_hewan' => ucwords(strtolower($request->nama_jenis_hewan))
             ]);
 
         return redirect()->route('admin.jenis.index')
@@ -93,13 +89,5 @@ class JenisHewanController extends Controller
         $request->validate([
             'nama_jenis_hewan' => 'required|max:100'
         ]);
-    }
-
-    /* =====================================
-        HELPER
-    ====================================== */
-    private function formatNama($nama)
-    {
-        return ucwords(strtolower($nama));
     }
 }

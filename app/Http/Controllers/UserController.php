@@ -28,6 +28,46 @@ class UserController extends Controller
             ->with('success', 'User berhasil ditambahkan');
     }
 
+    public function edit($id)
+    {
+        $user = User::findOrFail($id);
+        return view('admin.user.edit', compact('user'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        // Validasi update (email unik tapi abaikan email user itu sendiri)
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'email' => 'required|email|unique:user,email,' . $id . ',iduser',
+            'password' => 'nullable|min:6'
+        ]);
+
+        // Update nama dan email
+        $user->nama = $this->formatNama($request->nama);
+        $user->email = $request->email;
+
+        // Update password kalau diisi
+        if ($request->password) {
+            $user->password = bcrypt($request->password);
+        }
+
+        $user->save();
+
+        return redirect()->route('admin.user.index')
+            ->with('success', 'User berhasil diperbarui');
+    }
+
+    public function destroy($id)
+    {
+        User::destroy($id);
+
+        return redirect()->route('admin.user.index')
+            ->with('success', 'User berhasil dihapus');
+    }
+
     /* -------------------------
        VALIDASI
     -------------------------- */
