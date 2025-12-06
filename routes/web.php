@@ -16,6 +16,11 @@ use App\Http\Controllers\RekamMedisController;
 use App\Http\Controllers\DetailRekamMedisController;
 use App\Http\Controllers\TemuDokterController;
 use App\Http\Controllers\ProfilController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\DokterController;
+use App\Http\Controllers\PerawatController;
+use App\Http\Controllers\ResepsionisController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -27,24 +32,23 @@ Auth::routes();
 
 Route::get('/', [SiteController::class, 'index'])->name('site.home');
 Route::get('/home', [SiteController::class, 'index']);
-Route::view('/layanan', 'site.layanan')->name('site.layanan');
-Route::view('/struktur', 'site.struktur')->name('site.struktur');
-Route::view('/visi_misi', 'site.visi_misi')->name('site.visi_misi');
 
 /*
 |--------------------------------------------------------------------------
 | LOGIN
 |--------------------------------------------------------------------------
 */
+
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 /*
 |--------------------------------------------------------------------------
-| ROLE BASED AREA (AUTH REQUIRED)
+| PROTECTED ROUTES
 |--------------------------------------------------------------------------
 */
+
 Route::middleware(['auth'])->group(function () {
 
     /*
@@ -59,17 +63,21 @@ Route::middleware(['auth'])->group(function () {
 
         Route::view('/dashboard', 'admin.dashboard')->name('dashboard');
 
-        // All CRUD master + transactional
+        // CRUD master + transaksi
         Route::resource('jenis', JenisHewanController::class);
         Route::resource('ras', RasController::class);
         Route::resource('kategori', KategoriController::class);
         Route::resource('kategori-klinis', KategoriKlinisController::class);
         Route::resource('kode-tindakan', KodeTindakanController::class);
+
         Route::resource('user', UserController::class);
+        Route::resource('role', RoleController::class);
+
         Route::resource('pemilik', PemilikController::class);
         Route::resource('pet', PetController::class);
+
         Route::resource('rekam-medis', RekamMedisController::class);
-        Route::resource('detail-rekam', DetailRekamMedisController::class);
+        Route::resource('detail', DetailRekamMedisController::class);
         Route::resource('temu-dokter', TemuDokterController::class);
     });
 
@@ -86,10 +94,17 @@ Route::middleware(['auth'])->group(function () {
 
         Route::view('/dashboard', 'dokter.dashboard')->name('dashboard');
 
-        Route::get('/pet', [PetController::class, 'indexDokter'])->name('pet');
-        Route::get('/rekam-medis', [RekamMedisController::class, 'indexDokter'])->name('rekam');
-        Route::resource('detail-rekam-medis', DetailRekamMedisController::class);
-        Route::get('/profil', [ProfilController::class, 'dokter'])->name('profil');
+        // View pasien (pet)
+        Route::get('/pet', [PetController::class, 'index'])->name('pet.index');
+
+        // View rekam medis
+        Route::get('/rekam-medis', [RekamMedisController::class, 'index'])->name('rekam.index');
+
+        // CRUD detail rekam medis
+        Route::resource('detail', DetailRekamMedisController::class);
+
+        // Profil dokter
+        Route::get('/profil', [DokterController::class, 'profil'])->name('profil.index');
     });
 
 
@@ -98,54 +113,74 @@ Route::middleware(['auth'])->group(function () {
     | PERAWAT
     |--------------------------------------------------------------------------
     */
-    Route::prefix('perawat')
-        ->middleware('isPerawat')
+    Route::middleware(['auth', 'isPerawat'])
+        ->prefix('perawat')
         ->name('perawat.')
         ->group(function () {
 
-        Route::view('/dashboard', 'perawat.dashboard')->name('dashboard');
+            Route::get('/dashboard', [PerawatController::class, 'dashboard'])->name('dashboard');
 
-        Route::get('/pet', [PetController::class, 'indexPerawat'])->name('pet');
-        Route::resource('rekam-medis', RekamMedisController::class);
-        Route::get('/detail-rekam-medis/{id}', [DetailRekamMedisController::class, 'showPerawat'])
-            ->name('detail.show');
-        Route::get('/profil', [ProfilController::class, 'perawat'])->name('profil');
-    });
+            Route::get('/pet', [PetController::class, 'index'])->name('pet.index');
 
+            Route::get('/profil', [PerawatController::class, 'index'])->name('profil.index');
+
+            Route::resource('/rekam', RekamMedisController::class);
+
+            Route::get('detail', [DetailRekamMedisController::class, 'index'])-> name('detail.index');
+        });
 
     /*
     |--------------------------------------------------------------------------
     | RESEPSIONIS
     |--------------------------------------------------------------------------
     */
-    Route::prefix('resepsionis')
-        ->middleware('isResepsionis')
-        ->name('resepsionis.')
-        ->group(function () {
+  Route::middleware(['auth', 'isResepsionis'])
+    ->prefix('resepsionis')
+     ->name('resepsionis.')
+    ->group(function () {
 
-        Route::view('/dashboard', 'resepsionis.dashboard')->name('dashboard');
+    // DASHBOARD
+    Route::get('/dashboard', [ResepsionisController::class, 'dashboard'])->name('dashboard');
 
-        Route::resource('pemilik', PemilikController::class);
-        Route::resource('pet', PetController::class);
-        Route::resource('temu-dokter', TemuDokterController::class);
-    });
+    // CRUD PEMILIK
+    Route::resource('/pemilik', PemilikController::class);
 
+    // CRUD PET
+    Route::resource('/pet', PetController::class);
+
+    // CRUD TEMU DOKTER
+    Route::resource('/temu-dokter', TemuDokterController::class);
+    Route::get('/profil', [ResepsionisController::class, 'index'])->name('profil.index');
+});
 
     /*
     |--------------------------------------------------------------------------
     | PEMILIK
     |--------------------------------------------------------------------------
     */
-    Route::prefix('pemilik')
-        ->middleware('isPemilik')
-        ->name('pemilik.')
-        ->group(function () {
+    Route::middleware(['auth', 'isPemilik'])
+    ->prefix('pemilik')
+    ->name('pemilik.')
+    ->group(function () {
+        
+        Route::get('/dashboard', [PemilikController::class, 'dashboard'])->name('dashboard');
 
-        Route::view('/dashboard', 'pemilik.dashboard')->name('dashboard');
+        // Jadwal Temu Dokter
+        Route::get('/temu-dokter', [TemuDokterController::class, 'temuDokter'])
+            ->name('temu-dokter.index');
 
-        Route::get('/pet', [PetController::class, 'indexPemilik'])->name('pet');
-        Route::get('/rekam-medis', [RekamMedisController::class, 'indexPemilik'])->name('rekam');
-        Route::get('/jadwal', [TemuDokterController::class, 'indexPemilik'])->name('jadwal');
-        Route::get('/profil', [ProfilController::class,'pemilik'])->name('profil');
+        // Rekam Medis
+        Route::get('/rekam', [RekamMedisController::class, 'rekamMedis'])
+            ->name('rekam.index');
+
+        // Pet yang dimiliki
+        Route::get('/pet', [PetController::class, 'pet'])
+            ->name('pet.index');
+
+        // Profil Pemilik
+        Route::get('/profil', [PemilikController::class, 'profil'])
+            ->name('profil.index');
     });
+
 });
+

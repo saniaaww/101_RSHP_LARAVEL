@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -8,7 +7,7 @@ class DetailRekamMedis extends Model
 {
     protected $table = 'detail_rekam_medis';
     protected $primaryKey = 'iddetail_rekam_medis';
-    public $timestamps = false;
+    public $timestamps = false; // tabel tidak ada created_at/updated_at
 
     protected $fillable = [
         'idrekam_medis',
@@ -16,13 +15,15 @@ class DetailRekamMedis extends Model
         'detail'
     ];
 
+    // Relasi ke RekamMedis
     public function rekamMedis()
     {
-        return $this->belongsTo(RekamMedis::class, 'idrekam_medis');
+        return $this->belongsTo(RekamMedis::class, 'idrekam_medis', 'idrekam_medis');
     }
 
-    public function tindakan()
+    // Relasi ke KodeTindakan (terapi)
+    public function kodeTindakan()
     {
-        return $this->belongsTo(KodeTindakanTerapi::class, 'idkode_tindakan_terapi');
+        return $this->belongsTo(KodeTindakanTerapi::class, 'idkode_tindakan_terapi', 'idkode_tindakan_terapi');
     }
 }

@@ -2,16 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TemuDokter;
+use Illuminate\Http\Request;
+use App\Models\Perawat;
+use App\Models\Pet;  // pasien
+use App\Models\RekamMedis;
 
 class PerawatController extends Controller
 {
+    public function dashboard()
+    {
+        return view('perawat.dashboard');
+    }
+
+    public function pasien()
+    {
+        $pasien = Pet::all();
+        return view('perawat.pet.index', compact('pasien'));
+    }
+
+    public function profil()
+    {
+        $perawat = Perawat::where('iduser', auth()->id())->firstOrFail();
+        return view('perawat.profil.index', compact('perawat'));
+    }
+
     public function index()
     {
-        $data = TemuDokter::with(['pet', 'roleUser.role'])
-                ->orderBy('no_urut', 'asc')
-                ->get();
+    $perawat = Perawat::where('iduser', auth()->id())->first();
 
-        return view('perawat.dashboard', compact('data'));
+    return view('perawat.profil.index', compact('perawat'));
     }
+
+
 }

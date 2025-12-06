@@ -10,14 +10,43 @@ class RekamMedisController extends Controller
 {
     public function index()
     {
-        $data = RekamMedis::with('pet')->get();
-        return view('admin.rekam-medis.index', compact('data'));
+        $rekamMedis = RekamMedis::all();
+        $role = auth()->user()->role_name;
+
+        if ($role === 'Administrator') {
+            return view('admin.rekam-medis.index', compact('rekamMedis'));
+
+        } elseif ($role === 'Dokter') {
+            return view('dokter.rekam.index', compact('rekamMedis'));
+
+        } elseif ($role === 'Perawat') {
+            // Perawat juga bisa CRUD → tampilkan view khusus perawat
+            return view('perawat.rekam.index', compact('rekamMedis'));
+
+        } elseif ($role === 'Pemilik') {
+            // Pemilik hanya melihat rekam medis hewan miliknya
+            $pemilik = auth()->user()->pemilik;
+            $pemilikId = $pemilik?->idpemilik;
+
+            $rekamMedis = RekamMedis::whereHas('reservasi_dokter.pet', function ($q) use ($pemilikId) {
+                $q->where('idpemilik', $pemilikId);
+            })->get();
+
+            return view('pemilik.rekam.index', compact('rekamMedis'));
+        }
+
+        abort(403, 'Unauthorized');
     }
 
     public function create()
     {
-        $pet = Pet::all();
-        return view('admin.rekam-medis.create', compact('pet'));
+        $role = auth()->user()->role_name;
+
+        if (in_array($role, ['Administrator', 'Dokter', 'Perawat'])) {
+            return view("$role.rekam.create");
+        }
+
+        abort(403, 'Unauthorized');
     }
 
     public function store(Request $request)
@@ -26,21 +55,38 @@ class RekamMedisController extends Controller
             'anamnesa' => 'required',
             'temuan_klinis' => 'required',
             'diagnosa' => 'required',
-            'idpet' => 'required'
+            'dokter_pemeriksa' => 'required|integer',
+            'idreservasi_dokter' => 'required|integer',
         ]);
 
-        RekamMedis::create($request->all());
+        RekamMedis::create($request->only([
+            'anamnesa',
+            'temuan_klinis',
+            'diagnosa',
+            'dokter_pemeriksa',
+            'idreservasi_dokter'
+        ]));
 
-        return redirect()->route('admin.rekam-medis.index')
-            ->with('success', 'Rekam medis berhasil ditambahkan');
+        $role = auth()->user()->role_name;
+
+        return match ($role) {
+            'Administrator' => redirect()->route('admin.rekam-medis.index')->with('success', 'Rekam medis berhasil ditambahkan'),
+            'Dokter'        => redirect()->route('dokter.rekam.index')->with('success', 'Rekam medis berhasil ditambahkan'),
+            'Perawat'       => redirect()->route('perawat.rekam.index')->with('success', 'Rekam medis berhasil ditambahkan'),
+            default         => abort(403, 'Unauthorized')
+        };
     }
 
     public function edit($id)
     {
-        $data = RekamMedis::findOrFail($id);
-        $pet = Pet::all();
+        $rekamMedis = RekamMedis::findOrFail($id);
+        $role = auth()->user()->role_name;
 
-        return view('admin.rekam-medis.edit', compact('data', 'pet'));
+        if (in_array($role, ['Administrator', 'Dokter', 'Perawat'])) {
+            return view("$role.rekam.edit", compact('rekamMedis'));
+        }
+
+        abort(403, 'Unauthorized');
     }
 
     public function update(Request $request, $id)
@@ -49,20 +95,41 @@ class RekamMedisController extends Controller
             'anamnesa' => 'required',
             'temuan_klinis' => 'required',
             'diagnosa' => 'required',
-            'idpet' => 'required'
+            'dokter_pemeriksa' => 'required|integer',
+            'idreservasi_dokter' => 'required|integer',
         ]);
 
-        RekamMedis::find($id)->update($request->all());
+        $rekamMedis = RekamMedis::findOrFail($id);
+        $rekamMedis->update($request->only([
+            'anamnesa',
+            'temuan_klinis',
+            'diagnosa',
+            'dokter_pemeriksa',
+            'idreservasi_dokter'
+        ]));
 
-        return redirect()->route('admin.rekam-medis.index')
-            ->with('success', 'Rekam medis berhasil diupdate');
+        $role = auth()->user()->role_name;
+
+        return match ($role) {
+            'Administrator' => redirect()->route('admin.rekam-medis.index')->with('success', 'Rekam medis berhasil diupdate'),
+            'Dokter'        => redirect()->route('dokter.rekam.index')->with('success', 'Rekam medis berhasil diupdate'),
+            'Perawat'       => redirect()->route('perawat.rekam.index')->with('success', 'Rekam medis berhasil diupdate'),
+            default         => abort(403, 'Unauthorized')
+        };
     }
 
     public function destroy($id)
     {
-        RekamMedis::find($id)->delete();
+        $rekamMedis = RekamMedis::findOrFail($id);
+        $rekamMedis->delete();
 
-        return redirect()->route('admin.rekam-medis.index')
-            ->with('success', 'Rekam medis berhasil dihapus');
+        $role = auth()->user()->role_name;
+
+        return match ($role) {
+            'Administrator' => redirect()->route('admin.rekam-medis.index')->with('success', 'Rekam medis berhasil dihapus'),
+            'Dokter'        => redirect()->route('dokter.rekam.index')->with('success', 'Rekam medis berhasil dihapus'),
+            'Perawat'       => redirect()->route('perawat.rekam.index')->with('success', 'Rekam medis berhasil dihapus'),
+            default         => abort(403, 'Unauthorized')
+        };
     }
 }

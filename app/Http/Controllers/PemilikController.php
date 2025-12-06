@@ -7,33 +7,59 @@ use Illuminate\Support\Facades\DB;
 
 class PemilikController extends Controller
 {
-    /* ===========================
-        INDEX (JOIN User)
-    ============================ */
+    /* ============================================================
+        INDEX
+        - Resepsionis: melihat semua pemilik (CRUD)
+        - Pemilik: melihat profil dirinya sendiri (READ)
+    ============================================================= */
     public function index()
     {
-        $pemilik = DB::table('pemilik')
-            ->join('user', 'pemilik.iduser', '=', 'user.iduser')
-            ->select('pemilik.*', 'user.nama', 'user.email')
-            ->get();
+        $role = auth()->user()->role_name;
 
-        return view('admin.pemilik.index', compact('pemilik'));
+        // ================= RESEPSIONIS =================
+        if ($role === 'Resepsionis') {
+            $pemilik = DB::table('pemilik')
+                ->join('user', 'pemilik.iduser', '=', 'user.iduser')
+                ->select('pemilik.*', 'user.nama', 'user.email')
+                ->get();
+
+            return view('resepsionis.pemilik.index', compact('pemilik'));
+        }
+
+        // ================= PEMILIK =================
+        if ($role === 'Pemilik') {
+            $userId = auth()->user()->iduser;
+
+            $pemilik = DB::table('pemilik')
+                ->join('user', 'pemilik.iduser', '=', 'user.iduser')
+                ->select('pemilik.*', 'user.nama', 'user.email')
+                ->where('pemilik.iduser', $userId)
+                ->first();
+
+            return view('pemilik.profil.index', compact('pemilik'));
+        }
+
+        abort(403, 'Unauthorized');
     }
 
-    /* ===========================
-        CREATE
-    ============================ */
+    /* ============================================================
+        CREATE - untuk RESEPSIONIS saja
+    ============================================================= */
     public function create()
     {
+        $this->authorizeResepsionis();
+
         $user = DB::table('user')->get();
-        return view('admin.pemilik.create', compact('user'));
+        return view('resepsionis.pemilik.create', compact('user'));
     }
 
-    /* ===========================
-        STORE
-    ============================ */
+    /* ============================================================
+        STORE - untuk RESEPSIONIS saja
+    ============================================================= */
     public function store(Request $request)
     {
+        $this->authorizeResepsionis();
+
         $request->validate([
             'no_wa' => 'required|max:45',
             'alamat' => 'required|max:100',
@@ -46,26 +72,31 @@ class PemilikController extends Controller
             'iduser' => $request->iduser
         ]);
 
-        return redirect()->route('admin.pemilik.index')
+        return redirect()->route('resepsionis.pemilik.index')
                          ->with('success', 'Pemilik berhasil ditambahkan');
     }
 
-    /* ===========================
-        EDIT
-    ============================ */
+    /* ============================================================
+        EDIT - untuk RESEPSIONIS saja
+    ============================================================= */
     public function edit($id)
     {
+        $this->authorizeResepsionis();
+
         $pemilik = DB::table('pemilik')->where('idpemilik', $id)->first();
         $user = DB::table('user')->get();
 
-        return view('admin.pemilik.edit', compact('pemilik', 'user'));
+        return view('resepsionis.pemilik.edit', compact('pemilik', 'user'));
+        
     }
 
-    /* ===========================
-        UPDATE
-    ============================ */
+    /* ============================================================
+        UPDATE - untuk RESEPSIONIS saja
+    ============================================================= */
     public function update(Request $request, $id)
     {
+        $this->authorizeResepsionis();
+
         $request->validate([
             'no_wa' => 'required|max:45',
             'alamat' => 'required|max:100',
@@ -80,18 +111,57 @@ class PemilikController extends Controller
                 'iduser' => $request->iduser
             ]);
 
-        return redirect()->route('admin.pemilik.index')
+        return redirect()->route('resepsionis.pemilik.index')
                          ->with('success', 'Pemilik berhasil diperbarui');
     }
 
-    /* ===========================
-        DELETE
-    ============================ */
+    /* ============================================================
+        DELETE - untuk RESEPSIONIS saja
+    ============================================================= */
     public function destroy($id)
     {
+        $this->authorizeResepsionis();
+
         DB::table('pemilik')->where('idpemilik', $id)->delete();
 
-        return redirect()->route('admin.pemilik.index')
+        return redirect()->route('resepsionis.pemilik.index')
                          ->with('success', 'Pemilik berhasil dihapus');
     }
+
+    /* ============================================================
+        HELPER
+    ============================================================= */
+    private function authorizeResepsionis()
+    {
+        if (auth()->user()->role_name !== 'Resepsionis') {
+            abort(403, 'Unauthorized');
+        }
+    }
+
+    public function dashboard()
+    {
+        // Ambil user login
+        $user = auth()->user();
+
+        // Ambil data pemilik berdasarkan iduser
+        $pemilik = DB::table('pemilik')
+                    ->where('iduser', $user->iduser)
+                    ->first();
+
+        // Arahkan ke tampilan dashboard PEMILIK, BUKAN profil
+        return view('pemilik.dashboard', compact('user', 'pemilik'));
+    }
+
+
+    public function profil()
+    {
+        $user = auth()->user();
+
+        $pemilik = DB::table('pemilik')
+            ->where('iduser', $user->iduser)
+            ->first();
+
+        return view('pemilik.profil.index', compact('user', 'pemilik'));
+    }
+
 }

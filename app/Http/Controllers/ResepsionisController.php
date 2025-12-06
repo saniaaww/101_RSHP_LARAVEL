@@ -1,15 +1,18 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use App\Models\TemuDokter;
 
 class ResepsionisController extends Controller
 {
-    public function index()
+    // DASHBOARD
+    public function dashboard()
     {
-        $data = TemuDokter::with(['pet', 'roleUser'])->get();
+        // Jika temu dokter hanya butuh pet, maka: with('pet')
+        $data = TemuDokter::with(['pet'])->get();
+
         return view('resepsionis.dashboard', compact('data'));
     }
-    
 }

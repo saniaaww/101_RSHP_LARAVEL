@@ -3,68 +3,99 @@
 namespace App\Http\Controllers;
 
 use App\Models\DetailRekamMedis;
-use App\Models\RekamMedis;
 use App\Models\KodeTindakanTerapi;
+use App\Models\RekamMedis;
 use Illuminate\Http\Request;
 
 class DetailRekamMedisController extends Controller
 {
+    /**
+     * Map role name (DB) → folder view + route prefix
+     * Administrator → admin
+     * Dokter → dokter
+     */
+    private function getFolder(): string
+    {
+        $role = auth()->user()->role_name;
+
+        return $role === 'Administrator'
+            ? 'admin'
+            : strtolower($role);
+    }
+
+    /**
+     * Get route name for redirect
+     */
+    private function getRedirectRoute(): string
+    {
+        $folder = $this->getFolder(); // admin / dokter
+        return $folder . '.detail.index';
+    }
+
     public function index()
     {
-        $data = DetailRekamMedis::with(['rekamMedis', 'tindakan'])->get();
-        return view('admin.detail_rekam.index', compact('data'));
+        $folder = $this->getFolder();
+        $details = DetailRekamMedis::with(['rekamMedis', 'kodeTindakan'])->get();
+
+        return view("$folder.detail.index", compact('details'));
     }
 
     public function create()
     {
-        $rekam = RekamMedis::all();
-        $tindakan = KodeTindakanTerapi::all();
+        $folder = $this->getFolder();
 
-        return view('admin.detail_rekam.create', compact('rekam','tindakan'));
+        return view("$folder.detail.create", [
+            'rekamMedis' => RekamMedis::all(),
+            'tindakan'   => KodeTindakanTerapi::all(),
+        ]);
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'idrekam_medis' => 'required',
-            'idkode_tindakan_terapi' => 'required',
-            'detail' => 'required'
-        ]);
+        $data = $this->validateData($request);
 
-        DetailRekamMedis::create($request->all());
+        DetailRekamMedis::create($data);
 
-        return redirect()->route('admin.detail-rekam.index')
-            ->with('success', 'Detail rekam medis berhasil ditambahkan');
+        return redirect()->route($this->getRedirectRoute())
+            ->with('success', 'Detail rekam medis berhasil ditambahkan!');
     }
 
     public function edit($id)
     {
-        $data = DetailRekamMedis::findOrFail($id);
-        $rekam = RekamMedis::all();
-        $tindakan = KodeTindakanTerapi::all();
+        $folder = $this->getFolder();
 
-        return view('admin.detail_rekam.edit', compact('data','rekam','tindakan'));
+        return view("$folder.detail.edit", [
+            'detail'     => DetailRekamMedis::findOrFail($id),
+            'rekamMedis' => RekamMedis::all(),
+            'tindakan'   => KodeTindakanTerapi::all(),
+        ]);
     }
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'idrekam_medis' => 'required',
-            'idkode_tindakan_terapi' => 'required',
-            'detail' => 'required'
-        ]);
+        $data = $this->validateData($request);
 
-        DetailRekamMedis::find($id)->update($request->all());
+        $detail = DetailRekamMedis::findOrFail($id);
+        $detail->update($data);
 
-        return redirect()->route('admin.detail-rekam.index')
-            ->with('success', 'Detail rekam medis berhasil diupdate');
+        return redirect()->route($this->getRedirectRoute())
+            ->with('success', 'Detail rekam medis berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
-        DetailRekamMedis::find($id)->delete();
+        DetailRekamMedis::destroy($id);
 
-        return redirect()->route('admin.detail-rekam.index')
-            ->with('success', 'Detail rekam medis dihapus');
+        return redirect()->route($this->getRedirectRoute())
+            ->with('success', 'Detail rekam medis berhasil dihapus!');
+    }
+
+    private function validateData(Request $request): array
+    {
+        return $request->validate([
+            'idrekam_medis'          => 'required|exists:rekam_medis,idrekam_medis',
+            'idkode_tindakan_terapi' => 'required|exists:kode_tindakan_terapi,idkode_tindakan_terapi',
+            'detail'                 => 'nullable|string|max:1000',
+        ]);
     }
 }

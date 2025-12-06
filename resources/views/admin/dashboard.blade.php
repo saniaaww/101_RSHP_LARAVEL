@@ -198,7 +198,7 @@
 
 <!-- Detail Rekam Medis -->
 <div class="col-md-4 col-sm-6 mb-4">
-    <a href="{{ route('admin.detail-rekam.index') }}" class="text-dark">
+    <a href="{{ route('admin.detail.index') }}" class="text-dark">
         <div class="card grad-card gradient-cyan text-white">
             <div class="card-body d-flex align-items-center">
                 <div class="grad-icon mr-3 gradient-cyan">📝</div>

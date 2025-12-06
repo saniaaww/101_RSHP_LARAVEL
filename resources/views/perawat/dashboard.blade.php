@@ -1,59 +1,113 @@
-@extends('admin.layouts.admin')
+@extends('layouts.lte.main')
+
+@section('title', 'Dashboard Perawat')
 
 @section('content')
-<div class="flex justify-end mb-4">
-    <form action="{{ route('logout') }}" method="POST">
-        @csrf
-        <button 
-            type="submit" 
-            class="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg shadow hover:bg-red-700 transition"
-        >
-            Logout
-        </button>
-    </form>
+
+<!-- Logout button -->
+<div class="row mb-4">
+    <div class="col text-right">
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit" class="btn btn-danger">
+                Logout
+            </button>
+        </form>
+    </div>
 </div>
-<h2 class="text-2xl font-bold mb-4">Daftar Pasien Hari Ini</h2>
 
-<table class="table-auto w-full border">
-    <thead>
-        <tr class="bg-gray-200">
-            <th class="border p-2">No Urut</th>
-            <th class="border p-2">Nama Pet</th>
-            <th class="border p-2">Pemilik</th>
-            <th class="border p-2">Dokter</th>
-            <th class="border p-2">Waktu Daftar</th>
-            <th class="border p-2">Status</th>
-        </tr>
-    </thead>
+<!-- Header -->
+<h2 class="text-center font-weight-bold mb-4" style="font-size:28px; color:#1B3C73;">
+    Menu Perawat
+</h2>
 
-    <tbody>
-        @forelse ($data as $d)
-        <tr>
-            <td class="border p-2">{{ $d->no_urut }}</td>
-            <td class="border p-2">{{ $d->pet->nama_pet ?? '-' }}</td>
+<!-- Card Gradient Styles -->
+<style>
+    .grad-card {
+        border-radius: 18px;
+        padding: 0;
+        transition: 0.3s;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+        border: none;
+        overflow: hidden;
+    }
+    .grad-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+    }
+    .grad-icon {
+        width: 60px; height: 60px; border-radius: 14px;
+        font-size: 26px; display: flex; align-items: center; justify-content: center;
+        color: white;
+    }
+    .gradient-blue { background: linear-gradient(135deg, #4A90E2, #6EC6FF); }
+    .gradient-green { background: linear-gradient(135deg, #4CAF50, #81C784); }
+    .gradient-orange { background: linear-gradient(135deg, #FF9800, #FFB74D); }
+    .gradient-purple { background: linear-gradient(135deg, #8E24AA, #BA68C8); }
+</style>
 
-            <td class="border p-2">
-                {{ $d->pet->pemilik->nama ?? '-' }}
-            </td>
+<!-- Cards Grid -->
+<div class="row">
 
-            <td class="border p-2">
-                {{ $d->roleUser->role->nama_role ?? 'Dokter' }}
-            </td>
+    <!-- Data Pasien -->
+    <div class="col-md-4 col-sm-6 mb-4">
+        <a href="{{ route('perawat.pet.index') }}" class="text-dark">
+            <div class="card grad-card gradient-blue text-white">
+                <div class="card-body d-flex align-items-center">
+                    <div class="grad-icon mr-3 gradient-blue">👨‍⚕️</div>
+                    <div>
+                        <h5 class="font-weight-bold">Data Pasien</h5>
+                        <p class="mb-0">Lihat daftar pasien</p>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
 
-            <td class="border p-2">{{ $d->waktu_daftar }}</td>
+    <!-- Rekam Medis -->
+    <div class="col-md-4 col-sm-6 mb-4">
+        <a href="{{ route('perawat.rekam.index') }}" class="text-dark">
+            <div class="card grad-card gradient-green text-white">
+                <div class="card-body d-flex align-items-center">
+                    <div class="grad-icon mr-3 gradient-green">📋</div>
+                    <div>
+                        <h5 class="font-weight-bold">Rekam Medis</h5>
+                        <p class="mb-0">Kelola rekam medis pasien</p>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
 
-            <td class="border p-2">
-                @if ($d->status == '1') Menunggu
-                @elseif ($d->status == '2') Selesai
-                @else Batal
-                @endif
-            </td>
-        </tr>
-        @empty
-        <tr>
-            <td colspan="6" class="text-center p-4">Tidak ada pasien</td>
-        </tr>
-        @endforelse
-    </tbody>
-</table>
+    <!-- Detail Rekam Medis -->
+    <div class="col-md-4 col-sm-6 mb-4">
+        <a href="{{ route('perawat.detail.index') }}" class="text-dark">
+            <div class="card grad-card gradient-orange text-white">
+                <div class="card-body d-flex align-items-center">
+                    <div class="grad-icon mr-3 gradient-orange">📝</div>
+                    <div>
+                        <h5 class="font-weight-bold">Detail Rekam Medis</h5>
+                        <p class="mb-0">Lihat atau edit detail rekam medis</p>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Profil Perawat -->
+    <div class="col-md-4 col-sm-6 mb-4">
+        <a href="{{ route('perawat.profil.index') }}" class="text-dark">
+            <div class="card grad-card gradient-purple text-white">
+                <div class="card-body d-flex align-items-center">
+                    <div class="grad-icon mr-3 gradient-purple">🩺</div>
+                    <div>
+                        <h5 class="font-weight-bold">Profil Perawat</h5>
+                        <p class="mb-0">Lihat profil Anda</p>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+</div>
 @endsection

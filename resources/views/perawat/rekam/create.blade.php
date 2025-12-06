@@ -6,18 +6,8 @@
 
 <div class="card p-4">
 
-<form action="{{ route('admin.rekam-medis.store') }}" method="POST">
+<form action="{{ route('perawat.rekam.store') }}" method="POST">
     @csrf
-
-    <div class="form-group">
-        <label>Pet</label>
-        <select name="idpet" class="form-control" required>
-            <option value="">-- Pilih Pet --</option>
-            @foreach($pet as $p)
-                <option value="{{ $p->idpet }}">{{ $p->nama }}</option>
-            @endforeach
-        </select>
-    </div>
 
     <div class="form-group mt-3">
         <label>Anamnesa</label>
@@ -32,6 +22,16 @@
     <div class="form-group mt-3">
         <label>Diagnosa</label>
         <textarea name="diagnosa" class="form-control" required></textarea>
+    </div>
+
+    <div class="form-group mt-3">
+        <label>Dokter Pemeriksa</label>
+        <input type="number" name="dokter_pemeriksa" class="form-control" required>
+    </div>
+
+    <div class="form-group mt-3">
+        <label>ID Reservasi Dokter</label>
+        <input type="number" name="idreservasi_dokter" class="form-control" required>
     </div>
 
     <button class="btn btn-success mt-3">Simpan</button>
