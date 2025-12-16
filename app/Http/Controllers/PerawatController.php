@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Perawat;
-use App\Models\Pet;  // pasien
-use App\Models\RekamMedis;
 
 class PerawatController extends Controller
 {
@@ -16,22 +14,43 @@ class PerawatController extends Controller
 
     public function pasien()
     {
-        $pasien = Pet::all();
+        $pasien = \App\Models\Pet::all();
         return view('perawat.pet.index', compact('pasien'));
     }
 
-    public function profil()
+    // ================================
+    // PROFIL PERAWAT (SESUAI DOKTER)
+    // ================================
+
+    public function profilIndex()
     {
-        $perawat = Perawat::where('iduser', auth()->id())->firstOrFail();
-        return view('perawat.profil.index', compact('perawat'));
+        $user = auth()->user();
+        $perawat = Perawat::where('iduser', $user->iduser)->first();
+
+        return view('perawat.profil.index', compact('user', 'perawat'));
     }
 
-    public function index()
+    public function profilEdit()
     {
-    $perawat = Perawat::where('iduser', auth()->id())->first();
+        $user = auth()->user();
+        $perawat = Perawat::where('iduser', $user->iduser)->first();
 
-    return view('perawat.profil.index', compact('perawat'));
+        return view('perawat.profil.edit', compact('user', 'perawat'));
     }
 
+    public function profilUpdate(Request $request)
+    {
+        $user = auth()->user();
+        $perawat = Perawat::where('iduser', $user->iduser)->first();
 
+        $perawat->update([
+            'alamat'        => $request->alamat,
+            'no_hp'         => $request->no_hp,
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'pendidikan'    => $request->pendidikan,
+        ]);
+
+        return redirect()->route('perawat.profil.index')
+                         ->with('success', 'Profil berhasil diperbarui!');
+    }
 }

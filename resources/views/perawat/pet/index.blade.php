@@ -1,4 +1,4 @@
-@extends('layouts.lte.main')
+@extends('layouts.app')
 
 @section('title', 'Data Pasien')
 
@@ -33,7 +33,7 @@
                     -
                 @endif
             </td>
-            <td>{{ $p->pemilik->nama ?? '-' }}</td>
+            <td>{{ $p->pemilik?->user?->nama ?? '-' }}</td>
             <td>{{ $p->ras->nama_ras ?? '-' }}</td>
         </tr>
         @endforeach

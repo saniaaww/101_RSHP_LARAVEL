@@ -22,4 +22,10 @@ class Dokter extends Model
     {
         return $this->belongsTo(User::class, 'iduser');
     }
+
+        public function rekamMedis()
+    {
+        return $this->hasMany(RekamMedis::class, 'dokter_pemeriksa', 'iddokter');
+    }
+
 }

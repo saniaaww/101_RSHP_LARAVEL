@@ -4,19 +4,25 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Pemilik;
 
 class PemilikController extends Controller
 {
     /* ============================================================
-        INDEX
-        - Resepsionis: melihat semua pemilik (CRUD)
-        - Pemilik: melihat profil dirinya sendiri (READ)
+        RESEPSIONIS — CRUD PEMILIK
     ============================================================= */
+    private function authorizeResepsionis()
+    {
+        if (auth()->user()->role_name !== 'Resepsionis') {
+            abort(403, 'Unauthorized');
+        }
+    }
+
     public function index()
     {
         $role = auth()->user()->role_name;
 
-        // ================= RESEPSIONIS =================
+        // Jika resepsionis → tampilkan semua pemilik
         if ($role === 'Resepsionis') {
             $pemilik = DB::table('pemilik')
                 ->join('user', 'pemilik.iduser', '=', 'user.iduser')
@@ -26,25 +32,14 @@ class PemilikController extends Controller
             return view('resepsionis.pemilik.index', compact('pemilik'));
         }
 
-        // ================= PEMILIK =================
+        // Jika pemilik → arahkan ke profil
         if ($role === 'Pemilik') {
-            $userId = auth()->user()->iduser;
-
-            $pemilik = DB::table('pemilik')
-                ->join('user', 'pemilik.iduser', '=', 'user.iduser')
-                ->select('pemilik.*', 'user.nama', 'user.email')
-                ->where('pemilik.iduser', $userId)
-                ->first();
-
-            return view('pemilik.profil.index', compact('pemilik'));
+            return redirect()->route('pemilik.dashboard');
         }
 
         abort(403, 'Unauthorized');
     }
 
-    /* ============================================================
-        CREATE - untuk RESEPSIONIS saja
-    ============================================================= */
     public function create()
     {
         $this->authorizeResepsionis();
@@ -53,9 +48,6 @@ class PemilikController extends Controller
         return view('resepsionis.pemilik.create', compact('user'));
     }
 
-    /* ============================================================
-        STORE - untuk RESEPSIONIS saja
-    ============================================================= */
     public function store(Request $request)
     {
         $this->authorizeResepsionis();
@@ -76,9 +68,6 @@ class PemilikController extends Controller
                          ->with('success', 'Pemilik berhasil ditambahkan');
     }
 
-    /* ============================================================
-        EDIT - untuk RESEPSIONIS saja
-    ============================================================= */
     public function edit($id)
     {
         $this->authorizeResepsionis();
@@ -87,12 +76,8 @@ class PemilikController extends Controller
         $user = DB::table('user')->get();
 
         return view('resepsionis.pemilik.edit', compact('pemilik', 'user'));
-        
     }
 
-    /* ============================================================
-        UPDATE - untuk RESEPSIONIS saja
-    ============================================================= */
     public function update(Request $request, $id)
     {
         $this->authorizeResepsionis();
@@ -115,9 +100,6 @@ class PemilikController extends Controller
                          ->with('success', 'Pemilik berhasil diperbarui');
     }
 
-    /* ============================================================
-        DELETE - untuk RESEPSIONIS saja
-    ============================================================= */
     public function destroy($id)
     {
         $this->authorizeResepsionis();
@@ -129,39 +111,47 @@ class PemilikController extends Controller
     }
 
     /* ============================================================
-        HELPER
+        PEMILIK — DASHBOARD & PROFIL
     ============================================================= */
-    private function authorizeResepsionis()
-    {
-        if (auth()->user()->role_name !== 'Resepsionis') {
-            abort(403, 'Unauthorized');
-        }
-    }
 
     public function dashboard()
     {
-        // Ambil user login
         $user = auth()->user();
 
-        // Ambil data pemilik berdasarkan iduser
         $pemilik = DB::table('pemilik')
                     ->where('iduser', $user->iduser)
                     ->first();
 
-        // Arahkan ke tampilan dashboard PEMILIK, BUKAN profil
         return view('pemilik.dashboard', compact('user', 'pemilik'));
     }
 
-
-    public function profil()
+    public function profilIndex()
     {
         $user = auth()->user();
-
-        $pemilik = DB::table('pemilik')
-            ->where('iduser', $user->iduser)
-            ->first();
+        $pemilik = Pemilik::where('iduser', $user->iduser)->first();
 
         return view('pemilik.profil.index', compact('user', 'pemilik'));
     }
 
+    public function profilEdit()
+    {
+        $user = auth()->user();
+        $pemilik = Pemilik::where('iduser', $user->iduser)->first();
+
+        return view('pemilik.profil.edit', compact('user', 'pemilik'));
+    }
+
+    public function profilUpdate(Request $request)
+    {
+        $user = auth()->user();
+        $pemilik = Pemilik::where('iduser', $user->iduser)->first();
+
+        $pemilik->update([
+            'alamat' => $request->alamat,
+            'no_wa' => $request->no_wa,
+        ]);
+
+        return redirect()->route('pemilik.profil.index')
+                         ->with('success', 'Profil diperbarui');
+    }
 }

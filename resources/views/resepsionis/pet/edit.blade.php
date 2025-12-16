@@ -1,4 +1,4 @@
-@extends('layouts.lte.main')
+@extends('layouts.app')
 
 @section('content')
 <div class="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow">
@@ -9,45 +9,49 @@
         @csrf
         @method('PUT')
 
-        <div class="mb-4">
-            <label class="block text-sm mb-1">Nama</label>
-            <input type="text" name="nama" value="{{ $pet->nama }}" class="w-full border p-2 rounded" required>
-        </div>
+    <div class="mb-4">
+    <label class="block text-sm mb-1">Nama</label>
+    <input type="text" name="nama" value="{{ $pet->nama }}" class="w-full border p-2 rounded" required>
+</div>
 
-        <div class="mb-4">
-            <label class="block text-sm mb-1">Jenis Kelamin</label>
-            <select name="jenis_kelamin" class="w-full border p-2 rounded" required>
-                <option value="Jantan" {{ $pet->jenis_kelamin == 'Jantan' ? 'selected' : '' }}>Jantan</option>
-                <option value="Betina" {{ $pet->jenis_kelamin == 'Betina' ? 'selected' : '' }}>Betina</option>
-            </select>
-        </div>
+<div class="mb-4">
+    <label class="block text-sm mb-1">Jenis Kelamin</label>
+    <select name="jenis_kelamin" class="w-full border p-2 rounded" required>
+        <option value="L" {{ $pet->jenis_kelamin == 'L' ? 'selected' : '' }}>Jantan</option>
+        <option value="P" {{ $pet->jenis_kelamin == 'P' ? 'selected' : '' }}>Betina</option>
+    </select>
+</div>
 
-        <div class="mb-4">
-            <label class="block text-sm mb-1">Tanggal Lahir</label>
-            <input type="date" name="tanggal_lahir" value="{{ $pet->tanggal_lahir }}" class="w-full border p-2 rounded" required>
-        </div>
+<div class="mb-4">
+    <label class="block text-sm mb-1">Tanggal Lahir</label>
+    <input type="date" name="tanggal_lahir" value="{{ $pet->tanggal_lahir }}" class="w-full border p-2 rounded" required>
+</div>
 
-        <div class="mb-4">
-            <label class="block text-sm mb-1">Ras</label>
-            <select name="idras" class="w-full border p-2 rounded" required>
-                @foreach($ras as $r)
-                    <option value="{{ $r->idras }}" {{ $pet->idras == $r->idras ? 'selected' : '' }}>
-                        {{ $r->nama_ras }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
+<div class="mb-4">
+    <label class="block text-sm mb-1">Warna / Tanda</label>
+    <input type="text" name="warna_tanda" value="{{ $pet->warna_tanda }}" class="w-full border p-2 rounded" required>
+</div>
 
-        <div class="mb-4">
-            <label class="block text-sm mb-1">Pemilik</label>
-            <select name="idpemilik" class="w-full border p-2 rounded" required>
-                @foreach($pemilik as $p)
-                    <option value="{{ $p->idpemilik }}" {{ $pet->idpemilik == $p->idpemilik ? 'selected' : '' }}>
-                        {{ $p->nama }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
+<div class="mb-4">
+    <label class="block text-sm mb-1">Ras</label>
+    <select name="idras_hewan" class="w-full border p-2 rounded" required>
+        @foreach($ras as $r)
+            <option value="{{ $r->idras_hewan }}" {{ $pet->idras_hewan == $r->idras_hewan ? 'selected' : '' }}>
+                {{ $r->nama_ras }}
+            </option>
+        @endforeach
+    </select>
+</div>
+
+<div class="mb-4">
+    <label class="block text-sm mb-1">Pemilik</label>
+    <select name="idpemilik" class="w-full border p-2 rounded" required>
+        @foreach($pemilik as $pm)
+                        <option value="{{ $pm->idpemilik }}">{{ $pm->nama }}</option>
+                    @endforeach
+    </select>
+</div>
+
 
         <button class="bg-blue-600 text-white px-4 py-2 rounded">Update</button>
     </form>

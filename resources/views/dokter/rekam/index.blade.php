@@ -1,42 +1,40 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <h3 class="mb-4">Daftar Rekam Medis</h3>
 
-    <div class="card">
-        <div class="card-body">
-            <table class="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Tanggal Dibuat</th>
-                        <th>Anamnesa</th>
-                        <th>Temuan Klinis</th>
-                        <th>Diagnosa</th>
-                        <th>Dokter Pemeriksa</th>
-                        <th>ID Reservasi Dokter</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($rekamMedis as $rekam)
-                    <tr>
-                        <td>{{ $rekam->idrekam_medis }}</td>
-                        <td>{{ $rekam->created_at }}</td>
-                        <td>{{ $rekam->anamnesa }}</td>
-                        <td>{{ $rekam->temuan_klinis }}</td>
-                        <td>{{ $rekam->diagnosa }}</td>
-                        <td>{{ $rekam->dokter_pemeriksa }}</td>
-                        <td>{{ $rekam->idreservasi_dokter }}</td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="7" class="text-center">Tidak ada data rekam medis.</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
+<h2 class="mb-4 text-2xl font-bold text-blue-800">Data Rekam Medis</h2>
+
+<div class="card p-4">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tanggal Dibuat</th>
+                <th>ID Reservasi</th>
+                <th>Dokter Pemeriksa</th>
+                <th>Anamnesa</th>
+                <th>Temuan Klinis</th>
+                <th>Diagnosa</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach($rekamMedis as $d)
+            <tr>
+                <td>{{ $d->idrekam_medis }}</td>
+                <td>{{ \Carbon\Carbon::parse($d->created_at)->format('d-m-Y H:i') }}</td>
+                <td>{{ $d->idreservasi_dokter }}</td>  
+                <td>{{ $d->dokter?->user?->nama ?? '-' }}</td>
+                <td>{{ Str::limit($d->anamnesa, 40) }}</td>
+                <td>{{ Str::limit($d->temuan_klinis, 40) }}</td>
+                <td>{{ Str::limit($d->diagnosa, 40) }}</td>
+                
+                
+            </tr>
+            @endforeach
+        </tbody>
+
+    </table>
 </div>
+
 @endsection

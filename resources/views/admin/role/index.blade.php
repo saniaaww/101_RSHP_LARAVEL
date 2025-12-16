@@ -6,7 +6,7 @@
         <a href="{{ route('admin.role.create') }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Tambah Role</a>
     </div>
 
-    <div class="bg-white rounded-xl shadow p-4">
+    <div>
         <table class="w-full text-left">
             <thead>
                 <tr class="text-sm text-blue-600">

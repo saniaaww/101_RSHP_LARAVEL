@@ -4,13 +4,12 @@
 
 @section('content')
 
-<!-- Logout button -->
 <div class="row mb-4">
     <div class="col text-right">
         <form action="{{ route('logout') }}" method="POST">
             @csrf
-            <button type="submit" class="btn btn-danger">
-                Logout
+            <button type="submit" class="btn btn-danger shadow-sm px-4 py-2" style="font-family:'Poppins', sans-serif;">
+                <i class="fas fa-sign-out-alt mr-2"></i> Logout
             </button>
         </form>
     </div>

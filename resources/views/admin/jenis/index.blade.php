@@ -24,7 +24,6 @@
         <div class="card-body">
 
             <table class="table table-bordered table-hover">
-                <thead class="text-center" style="background:#E3F2FD;">
                     <tr>
                         <th style="width: 80px;">ID</th>
                         <th>Nama Jenis Hewan</th>

@@ -1,4 +1,4 @@
-@extends('layouts.lte.main')
+@extends('layouts.app')
 
 @section('content')
 
@@ -8,7 +8,7 @@
 
 <div class="card p-4">
 
-<form action="{{ route('admin.temu-dokter.store') }}" method="POST">
+<form action="{{ route('resepsionis.temu-dokter.store') }}" method="POST">
     @csrf
 
     {{-- Pet --}}
@@ -48,7 +48,7 @@
 
     <div class="mt-4">
         <button class="btn btn-success">Simpan</button>
-        <a href="{{ route('admin.temu-dokter.index') }}" class="btn btn-secondary">
+        <a href="{{ route('resepsionis.temu-dokter.index') }}" class="btn btn-secondary">
             Kembali
         </a>
     </div>

@@ -15,9 +15,9 @@
 
         <label>User</label>
         <select name="iduser" class="form-control">
-            @foreach($users as $u)
-            <option value="{{ $u->id }}" {{ $pemilik->iduser == $u->id ? 'selected' : '' }}>
-                {{ $u->name }}
+            @foreach($user as $u)
+            <option value="{{ $u->iduser }}" {{ $pemilik->iduser == $u->iduser ? 'selected' : '' }}>
+                {{ $u->nama }}
             </option>
             @endforeach
         </select>

@@ -27,7 +27,7 @@ protected $fillable = ['nama','email','password'];
 
     public function pemilik()
     {
-        return $this -> hasOne(Pemilik::class, 'iduser', 'iduser');
+        return $this->hasOne(Pemilik::class, 'iduser', 'iduser');
     }
 
     public function roleUser()

@@ -1,12 +1,9 @@
-@extends('layouts.lte.main')
+@extends('layouts.app')
 @section('content')
 
 <div class="py-8">
     <div class="flex items-center justify-between mb-6">
         <h2 class="text-2xl font-semibold text-blue-800">Daftar Hewan Peliharaan (Pet)</h2>
-        <a href="{{ route('admin.pet.create') }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg">
-            Tambah Pet
-        </a>
     </div>
 
     <div>
@@ -20,7 +17,6 @@
             <th>Jenis Kelamin</th>
             <th>Pemilik</th>
             <th>Ras Hewan</th>
-            <th>Aksi</th>
         </tr>
     </thead>
     <tbody>
@@ -41,19 +37,6 @@
             </td>
             <td>{{ $p->pemilik?->user?->nama ?? '-' }}</td>
             <td>{{ $p->ras->nama_ras ?? '-' }}</td>
-    
-                    <td class="p-3">
-                        <a href="{{ route('admin.pet.edit', $p->idpet) }}" class="text-sm text-blue-600 mr-3">Edit</a>
-
-                        <form action="{{ route('admin.pet.destroy', $p->idpet) }}" method="POST" class="inline">
-                            @csrf
-                            @method('DELETE')
-                            <button class="text-sm text-red-500"
-                                    onclick="return confirm('Yakin hapus?')">
-                                Hapus
-                            </button>
-                        </form>
-                    </td>
                 </tr>
             @endforeach
 

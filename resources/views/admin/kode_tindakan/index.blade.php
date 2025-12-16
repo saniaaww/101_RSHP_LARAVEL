@@ -23,8 +23,8 @@
                 <tr class="border-t">
                     <td class="p-3">{{ $d->kode }}</td>
                     <td class="p-3">{{ $d->deskripsi_tindakan_terapi }}</td>
-                    <td class="p-3">{{ $d->kategori->nama_kategori ?? '-' }}</td>
-                    <td class="p-3">{{ $d->kategoriKlinis->nama_kategori_klinis ?? '-' }}</td>
+                    <td class="p-3">{{ $d->nama_kategori ?? '-' }}</td>
+                    <td class="p-3">{{ $d->nama_kategori_klinis ?? '-' }}</td>
                     <td class="p-3">
                         <a href="{{ route('admin.kode-tindakan.edit', $d->idkode_tindakan_terapi) }}" class="text-sm text-blue-600 mr-3">Edit</a>
                         <form action="{{ route('admin.kode-tindakan.destroy', $d->idkode_tindakan_terapi) }}" method="POST" class="inline">

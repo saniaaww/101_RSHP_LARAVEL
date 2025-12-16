@@ -3,16 +3,16 @@
 
 <div class="py-8">
     <div class="flex items-center justify-between mb-6">
-        <h2 class="text-2xl font-semibold text-blue-800">Daftar User</h2>
-        <a href="{{ route('admin.user.create') }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg">
-            Tambah User
-        </a>
+        <h2>Daftar User</h2>
+      <a href="{{ route('admin.user.create') }}" class="btn btn-primary mb-3">
+    Tambah User
+</a>
+
     </div>
 
-    <div class="bg-white rounded-xl shadow p-4">
         <table class="w-full text-left">
             <thead>
-                <tr class="text-sm text-blue-600">
+                <tr>
                     <th class="p-3">ID</th>
                     <th class="p-3">Nama</th>
                     <th class="p-3">Email</th>
@@ -30,7 +30,7 @@
                     <td class="p-3">••••••••••</td> {{-- password tidak ditampilkan --}}
                     
                     <td class="p-3">
-                        <a href="{{ route('admin.user.edit', $u->iduser) }}" class="text-blue-600 text-sm mr-3">
+                        <a href="{{ route('admin.user.edit', $u->iduser) }}">
                             Edit
                         </a>
 

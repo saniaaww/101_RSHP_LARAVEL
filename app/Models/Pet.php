@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Models;
-
 use Illuminate\Database\Eloquent\Model;
 
 class Pet extends Model
@@ -16,7 +14,7 @@ class Pet extends Model
         'warna_tanda',
         'jenis_kelamin',
         'idpemilik',
-        'idras_hewan'
+        'idras_hewan',
     ];
 
     public function ras()
@@ -28,4 +26,5 @@ class Pet extends Model
     {
         return $this->belongsTo(Pemilik::class, 'idpemilik', 'idpemilik');
     }
+    
 }

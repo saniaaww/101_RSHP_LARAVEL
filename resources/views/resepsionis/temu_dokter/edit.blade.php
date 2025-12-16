@@ -1,23 +1,24 @@
-@extends('layouts.lte.main')
+@extends('layouts.app')
 
 @section('content')
 
 <h2 class="text-2xl mb-4 font-semibold text-blue-800">
-    Tambah Reservasi Dokter
+    Edit Reservasi Dokter
 </h2>
 
 <div class="card p-4">
 
-<form action="{{ route('admin.temu-dokter.store') }}" method="POST">
+<form action="{{ route('resepsionis.temu-dokter.update', $data->idreservasi_dokter) }}" method="POST">
     @csrf
+    @method('PUT')
 
     {{-- Pet --}}
     <div class="form-group mt-3">
         <label>Pilih Pet</label>
         <select name="idpet" class="form-control" required>
-            <option value="">-- Pilih Pet --</option>
             @foreach($pet as $p)
-                <option value="{{ $p->idpet }}">
+                <option value="{{ $p->idpet }}"
+                    {{ $p->idpet == $data->idpet ? 'selected' : '' }}>
                     {{ $p->nama }}
                 </option>
             @endforeach
@@ -25,7 +26,7 @@
     </div>
 
     {{-- Dokter --}}
-    <div class="form-group mt-3">
+  <div class="form-group mt-3">
         <label>Pilih Dokter</label>
         <select name="idrole_user" class="form-control" required>
             <option value="">-- Pilih Dokter --</option>
@@ -37,18 +38,24 @@
         </select>
     </div>
 
-      {{-- Status --}}
+    
+    {{-- Status --}}
     <div class="form-group mt-3">
         <label>Status</label>
         <select name="status" class="form-control" required>
-            <option value="B">Belum</option>
-            <option value="S">Selesai</option>
+            <option value="B" {{ $data->status == 'B' ? 'selected' : '' }}>
+                Belum
+            </option>
+            <option value="S" {{ $data->status == 'S' ? 'selected' : '' }}>
+                Selesai
+            </option>
         </select>
     </div>
 
+
     <div class="mt-4">
-        <button class="btn btn-success">Simpan</button>
-        <a href="{{ route('admin.temu-dokter.index') }}" class="btn btn-secondary">
+        <button class="btn btn-primary">Update</button>
+        <a href="{{ route('resepsionis.temu-dokter.index') }}" class="btn btn-secondary">
             Kembali
         </a>
     </div>

@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Models;
-
 use Illuminate\Database\Eloquent\Model;
 
 class TemuDokter extends Model
@@ -17,14 +15,11 @@ class TemuDokter extends Model
         'idpet',
         'idrole_user'
     ];
-
-    // Relasi ke tabel pet
     public function pet()
     {
         return $this->belongsTo(Pet::class, 'idpet', 'idpet');
     }
 
-    // Relasi ke role_user
     public function roleUser()
     {
         return $this->belongsTo(RoleUser::class, 'idrole_user', 'idrole_user');
@@ -34,6 +29,11 @@ class TemuDokter extends Model
     {
         return $this->belongsTo(RoleUser::class, 'idrole_user');
     }
+    public function rekamMedis()
+    {
+        return $this->hasMany(RekamMedis::class, 'idreservasi_dokter', 'idreservasi_dokter');
+    }
+
 }
 
 

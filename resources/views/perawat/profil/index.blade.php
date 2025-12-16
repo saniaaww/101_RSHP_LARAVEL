@@ -1,51 +1,36 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <h3 class="mb-4">Profil Perawat</h3>
 
-    <div class="card">
-        <div class="card-body">
+<h2 class="text-2xl mb-4 font-semibold">Profil Perawat</h2>
 
-            <div class="row mb-3">
-                <div class="col-md-4 text-muted">ID Perawat</div>
-                <div class="col-md-8">{{ $perawat->idperawat }}</div>
-            </div>
+<div class="card p-4">
 
-            <div class="row mb-3">
-                <div class="col-md-4 text-muted">Alamat</div>
-                <div class="col-md-8">{{ $perawat->alamat }}</div>
-            </div>
+    <table class="table table-bordered">
+        <tr>
+            <th>Nama User</th>
+            <td>{{ $user->nama }}</td>
+        </tr>
+        <tr>
+            <th>Alamat</th>
+            <td>{{ $perawat->alamat ?? '-' }}</td>
+        </tr>
+        <tr>
+            <th>No HP</th>
+            <td>{{ $perawat->no_hp ?? '-' }}</td>
+        </tr>
+        <tr>
+            <th>Jenis Kelamin</th>
+            <td>{{ $perawat->jenis_kelamin ?? '-' }}</td>
+        </tr>
+        <tr>
+            <th>Pendidikan</th>
+            <td>{{ $perawat->pendidikan ?? '-' }}</td>
+        </tr>
+    </table>
 
-            <div class="row mb-3">
-                <div class="col-md-4 text-muted">No. HP</div>
-                <div class="col-md-8">{{ $perawat->no_hp }}</div>
-            </div>
+    <a href="{{ route('perawat.profil.edit') }}" class="btn btn-primary mt-3">Edit Profil</a>
 
-            <div class="row mb-3">
-                <div class="col-md-4 text-muted">Jenis Kelamin</div>
-                <div class="col-md-8">
-                    @if($perawat->jenis_kelamin == 'L')
-                        Laki-laki
-                    @else
-                        Perempuan
-                    @endif
-                </div>
-            </div>
-
-            <div class="row mb-3">
-                <div class="col-md-4 text-muted">Pendidikan</div>
-                <div class="col-md-8">{{ $perawat->pendidikan }}</div>
-            </div>
-
-            <div class="row mb-3">
-                <div class="col-md-4 text-muted">User Login</div>
-                <div class="col-md-8">{{ $perawat->user->name ?? '-' }}</div>
-            </div>
-
-            <a href="{{ route('perawat.dashboard') }}" class="btn btn-secondary mt-3">Kembali</a>
-
-        </div>
-    </div>
 </div>
+
 @endsection

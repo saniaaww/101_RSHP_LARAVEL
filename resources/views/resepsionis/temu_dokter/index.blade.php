@@ -1,4 +1,4 @@
-@extends('layouts.lte.main')
+@extends('layouts.app')
 
 @section('content')
 
@@ -6,7 +6,7 @@
     Reservasi Temu Dokter
 </h2>
 
-<a href="{{ route('admin.temu-dokter.create') }}" class="btn btn-primary mb-3">
+<a href="{{ route('resepsionis.temu-dokter.create') }}" class="btn btn-primary mb-3">
     Tambah Reservasi
 </a>
 
@@ -47,12 +47,12 @@
                 </td>
 
                 <td class="text-center">
-                    <a href="{{ route('admin.temu-dokter.edit', $d->idreservasi_dokter) }}"
+                    <a href="{{ route('resepsionis.temu-dokter.edit', $d->idreservasi_dokter) }}"
                        class="btn btn-sm btn-warning">
                         Edit
                     </a>
 
-                    <form action="{{ route('admin.temu-dokter.destroy', $d->idreservasi_dokter) }}"
+                    <form action="{{ route('resepsionis.temu-dokter.destroy', $d->idreservasi_dokter) }}"
                           method="POST" class="d-inline">
                         @csrf
                         @method('DELETE')

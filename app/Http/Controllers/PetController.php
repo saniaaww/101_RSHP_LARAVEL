@@ -49,35 +49,55 @@ class PetController extends Controller
         return view("$folder.pet.index", compact('pet'));
     }
 
-    public function create()
-    {
-        $role = auth()->user()->role_name;
-        if (!in_array($role, ['Administrator', 'Resepsionis'], true)) {
-            abort(403, 'Unauthorized');
-        }
+   public function create()
+{
+    $role = auth()->user()->role_name;
 
-        $folder = $this->mapViewFolder($role);
-        if (!$folder) abort(403, 'Unauthorized');
-
-        $pemilik = Pemilik::all();
-        $ras = RasHewan::all();
-
-        return view("$folder.pet.create", compact('pemilik', 'ras'));
+    if (!in_array($role, ['Administrator', 'Resepsionis'], true)) {
+        abort(403, 'Unauthorized');
     }
 
-    public function store(Request $request)
-    {
-        $role = auth()->user()->role_name;
-        if (!in_array($role, ['Administrator', 'Resepsionis'], true)) {
-            abort(403, 'Unauthorized');
-        }
+    $folder = $role === 'Administrator' ? 'admin' : 'resepsionis';
 
-        $this->validateData($request);
+    $pemilik = Pemilik::join('user', 'pemilik.iduser', '=', 'user.iduser')
+        ->select('pemilik.idpemilik', 'user.nama')
+        ->get();
 
-        Pet::create($request->all());
+    $ras = RasHewan::all();
 
-        return redirect()->back()->with('success', 'Data Pet berhasil ditambahkan!');
+    return view("$folder.pet.create", compact('pemilik', 'ras', 'folder'));
+}
+
+
+  public function store(Request $request)
+{
+    // Cek role
+    $role = auth()->user()->role_name;
+    if (!in_array($role, ['Administrator', 'Resepsionis'], true)) {
+        abort(403, 'Unauthorized');
     }
+
+    // Validasi
+    $this->validateData($request);
+
+    // Simpan data pet (AMAN, sesuai tabel)
+    Pet::create([
+        'nama'          => $request->nama,
+        'tanggal_lahir' => $request->tanggal_lahir,
+        'warna_tanda'   => $request->warna_tanda,
+        'jenis_kelamin' => $request->jenis_kelamin,
+        'idpemilik'     => $request->idpemilik,
+        'idras_hewan'   => $request->idras_hewan,
+    ]);
+
+    // Redirect ke INDEX (BUKAN balik ke form)
+    $folder = $this->mapViewFolder($role);
+
+    return redirect()
+        ->route("$folder.pet.index")
+        ->with('success', 'Data Pet berhasil ditambahkan!');
+}
+
 
     public function edit($id)
     {
@@ -90,7 +110,10 @@ class PetController extends Controller
         if (!$folder) abort(403, 'Unauthorized');
 
         $pet = Pet::findOrFail($id);
-        $pemilik = Pemilik::all();
+        $pemilik = Pemilik::join('user', 'pemilik.iduser', '=', 'user.iduser')
+        ->select('pemilik.idpemilik', 'user.nama')
+        ->get();
+
         $ras = RasHewan::all();
 
         return view("$folder.pet.edit", compact('pet', 'pemilik', 'ras'));

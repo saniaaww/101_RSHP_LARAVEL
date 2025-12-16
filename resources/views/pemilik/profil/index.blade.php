@@ -1,43 +1,28 @@
-@extends('layouts.lte.main')
-
-@section('title', 'Profil Pemilik')
+@extends('layouts.app')
 
 @section('content')
 
-<h2 class="text-center font-weight-bold mb-4" style="font-size:28px; color:#1B3C73;">
-    Profil Pemilik
-</h2>
+<h2 class="text-2xl mb-4 font-semibold">Profil Pemilik</h2>
 
-<div class="card-body">
+<div class="card p-4">
 
-    {{-- Nama --}}
-    <div class="row mb-3">
-        <div class="col-md-4 text-muted">Nama</div>
-        <div class="col-md-8">{{ $user->nama }}</div>
-    </div>
+    <table class="table table-bordered">
+        <tr>
+            <th>Nama User</th>
+            <td>{{ $user->nama }}</td>
+        </tr>
+        <tr>
+            <th>No WA</th>
+            <td>{{ $pemilik->no_wa ?? '-' }}</td>
+        </tr>
+        <tr>
+            <th>Alamat</th>
+            <td>{{ $pemilik->alamat ?? '-' }}</td>
+        </tr>
+    </table>
 
-    {{-- Email --}}
-    <div class="row mb-3">
-        <div class="col-md-4 text-muted">Email</div>
-        <div class="col-md-8">{{ $user->email }}</div>
-    </div>
+    <a href="{{ route('pemilik.profil.edit') }}" class="btn btn-primary mt-3">Edit Profil</a>
 
-    {{-- Nomor WA --}}
-    <div class="row mb-3">
-        <div class="col-md-4 text-muted">No. WA</div>
-        <div class="col-md-8">{{ $pemilik->no_wa ?? '-' }}</div>
-    </div>
-
-    {{-- Alamat --}}
-    <div class="row mb-3">
-        <div class="col-md-4 text-muted">Alamat</div>
-        <div class="col-md-8">{{ $pemilik->alamat ?? '-' }}</div>
-    </div>
-
-</div>
-
-
-    </div>
 </div>
 
 @endsection

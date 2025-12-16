@@ -9,9 +9,10 @@
         <thead>
             <tr>
                 <th>No</th>
-                <th>No WA</th>
-                <th>Alamat</th>
                 <th>User</th>
+                <th>No WA</th>
+                <th>Email</th>
+                <th>Alamat</th>
                 <th>Aksi</th>
             </tr>
         </thead>
@@ -19,9 +20,10 @@
             @foreach($pemilik as $p)
             <tr>
                 <td>{{ $loop->iteration }}</td>
+                <td>{{ $p->nama}}</td>
                 <td>{{ $p->no_wa }}</td>
                 <td>{{ $p->alamat }}</td>
-                <td>{{ $p->iduser }}</td>
+                
                 <td>
                     <a href="{{ route('resepsionis.pemilik.edit', $p->idpemilik) }}" class="btn btn-warning btn-sm">Edit</a>
                     <form action="{{ route('resepsionis.pemilik.destroy', $p->idpemilik) }}" method="POST" style="display:inline;">

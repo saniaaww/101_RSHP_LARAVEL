@@ -19,12 +19,44 @@ class DokterController extends Controller
         return view('dokter.dashboard', compact('data'));
     }
 
-    public function profil()
+    public function dashboard()
     {
-        // Pastikan ambil data dokter berdasarkan iduser yang login
-        $dokter = Dokter::where('iduser', auth()->id())->firstOrFail();
+        return $this->index();
+    }
 
-        // Selalu arahkan ke folder 'dokter' (LOWERCASE)
-        return view('dokter.profil.index', compact('dokter'));
+    /* ==========================
+        PROFIL DOKTER
+    ===========================*/
+
+    public function profilIndex()
+    {
+        $user = auth()->user();                 // user login
+        $dokter = Dokter::where('iduser', $user->iduser)->first();   // FIX: pakai iduser
+
+        return view('dokter.profil.index', compact('user', 'dokter'));
+    }
+
+    public function profilEdit()
+    {
+        $user = auth()->user();
+        $dokter = Dokter::where('iduser', $user->iduser)->first();   // FIX: pakai iduser
+
+        return view('dokter.profil.edit', compact('user', 'dokter'));
+    }
+
+    public function profilUpdate(Request $request)
+    {
+        $user = auth()->user();
+        $dokter = Dokter::where('iduser', $user->iduser)->first();   // FIX: pakai iduser
+
+        $dokter->update([
+            'alamat' => $request->alamat,
+            'no_hp' => $request->no_hp,
+            'bidang_dokter' => $request->bidang_dokter,
+            'jenis_kelamin' => $request->jenis_kelamin,
+        ]);
+
+        return redirect()->route('dokter.profil.index')
+            ->with('success', 'Profil diperbarui');
     }
 }
